@@ -1,0 +1,18 @@
+body {
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 50%),
+    linear-gradient(135deg, var(--colore-primario) 0%, var(--colore-sfondo-scuro) 100%);
+  color: var(--colore-testo);
+  padding: 0;
+  margin: 0;
+}
+
+.contenitoreHome {
+  padding: 24px 16px 48px;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}

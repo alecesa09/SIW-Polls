@@ -1,0 +1,16 @@
+.logoContainer {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logoImage {
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 4px; /* [Speculazione] Rende il logo leggermente smussato se è quadrato */
+}
+
+/* Serve per occupare lo spazio vuoto e spingere i bottoni verso destra */
+.spacer {
+  flex-grow: 1;
+}
