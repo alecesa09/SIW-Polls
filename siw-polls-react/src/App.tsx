@@ -1,15 +1,26 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import Navbar from './components/nav/Nav.tsx';
-import { AuthService } from './service/AuthService.ts';
+import Home from './pages/Home.tsx';
+import { AuthService } from './service/AuthService';
 
 function App() {
   const [utenteLoggato, setUtente] = useState(false);
   const [caricamento, setCaricamento] = useState(true); 
 
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+      setUtente(false); // La Navbar si aggiorna istantaneamente
+    } catch (error) {
+      console.error("Errore durante il logout", error);
+    }
+  };
+
   useEffect(() => {
     const controllaSessione = async () => {
       try {
-        // 2. Chiama il metodo dall'oggetto AuthService
         const log = await AuthService.getLog();
         setUtente(log);
       } catch (error) {
@@ -21,17 +32,7 @@ function App() {
 
     controllaSessione();
   }, []); 
-
-  // 3. CREA LA FUNZIONE DI LOGOUT
-  const handleLogout = async () => {
-    try {
-      await AuthService.logout(); // Fa la chiamata POST al backend
-      setUtente(false);           // Aggiorna la grafica istantaneamente
-    } catch (error) {
-      console.error("Errore durante il logout", error);
-    }
-  };
-
+  
   if (caricamento) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -41,10 +42,12 @@ function App() {
   }
 
   return (
-    <div>
-      {/* 4. Passa la funzione alla Navbar tramite la prop onLogout */}
+    <BrowserRouter>
       <Navbar isLoggedIn={utenteLoggato} onLogout={handleLogout} />
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

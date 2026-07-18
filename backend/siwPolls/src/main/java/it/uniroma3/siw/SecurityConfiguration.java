@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+
+import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 @EnableWebSecurity 
 public class SecurityConfiguration { 
@@ -70,12 +72,17 @@ public class SecurityConfiguration {
     	
     	httpSecurity.logout(logout -> { 
     		logout.logoutUrl("/logout"); 
-    		logout.logoutSuccessUrl("/");
     		logout.invalidateHttpSession(true); 
     		logout.deleteCookies("JSESSIONID"); 
     		logout.clearAuthentication(true); 
-    		logout.permitAll(); 
+    		logout.permitAll();
+    		logout.logoutSuccessHandler((request, response, authentication) -> {
+                response.setStatus(HttpServletResponse.SC_OK);
+            });
     		});
+    	
+    	
+
         return httpSecurity.build();
     }
 }
