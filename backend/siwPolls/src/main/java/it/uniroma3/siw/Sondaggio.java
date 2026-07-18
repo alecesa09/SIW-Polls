@@ -1,10 +1,12 @@
 package it.uniroma3.siw;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,42 +14,50 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 
 @Entity
 public class Sondaggio {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	@NotBlank
-	private String Titolo;
-	@NotBlank
-	private String descrizione;
-	
-	private String Immagine;
-	@NotNull
-	private LocalDate dataScadenza;
-	
-	private LocalDate dataCreazione;
-	
-	public enum Visibilita {
-		 PUBBLICO, PRIVATO
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @NotBlank
+    private String titolo;
+
+    @NotBlank
+    private String descrizione;
+
+    private String immagine;
+
+    @NotNull
+    private LocalDate dataScadenza;
+
+    private LocalDate dataCreazione;
+
+    public enum Visibilita { PUBBLICO, PRIVATO }
+
     @Enumerated(EnumType.STRING)
     private Visibilita visibilita;
-    //da mettere un validation se visibilita privata allora non puo essere null
+
+    @Column(unique = true)
     private String codiceAccesso;
-    @OneToMany(mappedBy="sondaggio",cascade=CascadeType.ALL)
+
+    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Domanda> domande;
+    
+    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Commento> commenti;
 
 	public String getTitolo() {
-		return Titolo;
+		return titolo;
 	}
 
 	public void setTitolo(String titolo) {
-		Titolo = titolo;
+		this.titolo = titolo;
 	}
 
 	public String getDescrizione() {
@@ -59,11 +69,11 @@ public class Sondaggio {
 	}
 
 	public String getImmagine() {
-		return Immagine;
+		return immagine;
 	}
 
 	public void setImmagine(String immagine) {
-		Immagine = immagine;
+		this.immagine = immagine;
 	}
 
 	public LocalDate getDataScadenza() {
@@ -129,6 +139,14 @@ public class Sondaggio {
 			return false;
 		Sondaggio other = (Sondaggio) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	public List<Commento> getCommenti() {
+		return commenti;
+	}
+
+	public void setCommenti(List<Commento> commenti) {
+		this.commenti = commenti;
 	} 
     
     
