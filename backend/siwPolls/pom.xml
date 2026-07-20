@@ -81,11 +81,6 @@
 			<artifactId>p6spy</artifactId>
 			<version>3.9.1</version>
 		</dependency>
-		<dependency>
-			<groupId>it.uniroma3.siw</groupId>
-			<artifactId>siw-movie-02</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>

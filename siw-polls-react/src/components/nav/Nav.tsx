@@ -35,7 +35,7 @@ export default function Navbar() {
                 </a>
               </li>
               <li className={styles.navItem}>
-                <a href={`${BACKEND_URL}/registrazione`} className={`${styles.btn} ${styles.btnPrimary}`}>
+                <a href={`${BACKEND_URL}/register`} className={`${styles.btn} ${styles.btnPrimary}`}>
                   Registrati
                 </a>
               </li>

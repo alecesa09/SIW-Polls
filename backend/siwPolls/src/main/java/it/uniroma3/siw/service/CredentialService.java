@@ -12,19 +12,19 @@ import it.uniroma3.siw.Credential;
 import it.uniroma3.siw.Utente;
 import it.uniroma3.siw.exception.EmailUtenteDuplicataException;
 import it.uniroma3.siw.exception.UsernameDuplicatoException;
-import it.uniroma3.siw.repository.CredentialsRepository;
+import it.uniroma3.siw.repository.CredentialRepository;
 import it.uniroma3.siw.repository.UtenteRepository;
 
 @Service
 public class CredentialService {
-	private final CredentialsRepository credentialRepository;
+	private final CredentialRepository credentialRepository;
 	private final UtenteRepository utenteRepository;
 	
 	 private PasswordEncoder passwordEncoder;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(CredentialService.class);
 	
-	public CredentialService(CredentialsRepository credentialRepository,PasswordEncoder passwordEncoder,UtenteRepository utenteRepository) {
+	public CredentialService(CredentialRepository credentialRepository,PasswordEncoder passwordEncoder,UtenteRepository utenteRepository) {
 		this.passwordEncoder = passwordEncoder;
 		this.credentialRepository = credentialRepository;
 		this.utenteRepository = utenteRepository;

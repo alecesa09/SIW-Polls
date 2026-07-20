@@ -1,4 +1,4 @@
-package it.uniroma3.siw;
+package it.uniroma3.siw.config;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -12,8 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+
+import it.uniroma3.siw.Credential;
 @Configuration
 @EnableWebSecurity 
 public class SecurityConfiguration { 
@@ -75,6 +80,13 @@ public class SecurityConfiguration {
     		logout.clearAuthentication(true); 
     		logout.permitAll(); 
     		});
+    	
+    	httpSecurity
+        .csrf(csrf -> csrf
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+        )
+        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

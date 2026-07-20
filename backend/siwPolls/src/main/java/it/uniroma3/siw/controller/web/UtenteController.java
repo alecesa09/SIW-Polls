@@ -1,4 +1,4 @@
-package it.uniroma3.siw.controller;
+package it.uniroma3.siw.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

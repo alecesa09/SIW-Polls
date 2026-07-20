@@ -96,37 +96,42 @@ export default function SondaggioComponent() {
                 ))}
             </section>
 
-            {/* SEZIONE COMMENTI */}
-            <section className={styles.section}>
-                <h2>Commenti ({sondaggio.commenti?.length || 0})</h2>
-                {sondaggio.commenti && sondaggio.commenti.length > 0 ? (
-                    sondaggio.commenti.map((commento) => (
-                        <div key={commento.id} className={styles.commentoCard}>
-                            <p className={styles.commentoMeta}>
-                                <span><strong>{commento.utente.nome} {commento.utente.cognome}</strong></span> 
-                                <span> - {new Date(commento.data).toLocaleDateString('it-IT')}</span>
-                            </p>
-                            <p className={styles.commentoTesto}>{commento.testo}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p className={styles.noCommenti}>Ancora nessun commento. Sii il primo a commentare!</p>
-                )}
-            </section>
+            {/* SEZIONE COMMENTI - Visibile solo se l'utente è loggato */}
+            {utente && (
+                <section className={styles.section}>
+                    <h2>Commenti ({sondaggio.commenti?.length || 0})</h2>
+                    {sondaggio.commenti && sondaggio.commenti.length > 0 ? (
+                        sondaggio.commenti.map((commento) => (
+                            <div key={commento.id} className={styles.commentoCard}>
+                                <p className={styles.commentoMeta}>
+                                    <span><strong>{commento.utente.nome} {commento.utente.cognome}</strong></span> 
+                                    <span> - {new Date(commento.data).toLocaleDateString('it-IT')}</span>
+                                </p>
+                                <p className={styles.commentoTesto}>{commento.testo}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className={styles.noCommenti}>Ancora nessun commento. Sii il primo a commentare!</p>
+                    )}
+                </section>
+            )}
 
-            {/* ZONA AZIONE IN FONDO (VOTA O ACCEDI) */}
+            {/* ZONA AZIONE IN FONDO */}
             <div className={styles.actionBox}>
                 {utente ? (
                     <div>
                         <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
-                        <Link to={`/sondaggio/${id}/vota`} className={styles.btnPrimary}>
+                        <Link 
+                            to={`/sondaggio/${id}/vota`} 
+                            state={{ sondaggioGiaCaricato: sondaggio }} 
+                            className={styles.btnPrimary}>
                             Vai al form di Votazione
                         </Link>
                     </div>
                 ) : (
                     <div>
-                        <p className={styles.actionText}>Devi essere registrato per poter votare.</p>
-                        <a href={`${BACKEND_URL}/login`} className={styles.btnSecondary}>
+                        <p className={styles.actionText}>Devi essere registrato per poter votare e leggere i commenti.</p>
+                        <a href={`${BACKEND_URL}/login?returnUrl=${window.location.pathname}`} className={styles.btnSecondary}>
                             Accedi per Votare
                         </a>
                     </div>

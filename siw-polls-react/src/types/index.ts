@@ -44,4 +44,13 @@ export interface AuthContextType {
   utente: Utente | null; 
   setUtente: (utente: Utente | null) => void;
 }
+export interface Voto{
+  domandaId: number;
+  opzioneId: number;
+}
+export interface Votazione {
+  sondaggioId: number;
+  visibilita: string;
+  votazione: Voto[];
+}
   

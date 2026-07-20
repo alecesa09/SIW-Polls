@@ -9,7 +9,7 @@ INSERT INTO utente (id, nome, cognome, email) VALUES (4, 'alessio', 'cesaroni', 
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (1, 'admin', '$2a$12$cFQDGMZXEPVMNfrmLUG92.zyQyWSD.4XmqoM9d66z8GwwUguhB5ku', 'ADMIN', 1);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (2, 'user', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 2);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (3, 'giulia', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 3);
-INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (4, 'cesa', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'ADMIN', 1);
+INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (4, 'cesa', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'ADMIN', 4);
 
 -- 3. Inserimento Sondaggi (ManyToOne con Utente) [verificato]
 -- Sondaggio 1 (Esistente)
@@ -77,3 +77,11 @@ INSERT INTO utente_partecipazioni (utente_id, partecipazioni_id) VALUES (2, 1);
 INSERT INTO utente_partecipazioni (utente_id, partecipazioni_id) VALUES (3, 2);
 INSERT INTO utente_partecipazioni (utente_id, partecipazioni_id) VALUES (1, 3);
 INSERT INTO utente_partecipazioni (utente_id, partecipazioni_id) VALUES (2, 6);
+
+SELECT setval('utente_seq', (SELECT MAX(id) FROM utente));
+SELECT setval('credential_seq', (SELECT MAX(id) FROM credential));
+SELECT setval('sondaggio_seq', (SELECT MAX(id) FROM sondaggio));
+SELECT setval('domanda_seq', (SELECT MAX(id) FROM domanda));
+SELECT setval('opzione_seq', (SELECT MAX(id) FROM opzione));
+SELECT setval('commento_seq', (SELECT MAX(id) FROM commento));
+SELECT setval('voto_seq', (SELECT MAX(id) FROM voto));

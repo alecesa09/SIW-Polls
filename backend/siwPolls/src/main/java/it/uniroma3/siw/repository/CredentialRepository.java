@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.uniroma3.siw.Credential;
 
-public interface CredentialsRepository extends JpaRepository<Credential, Long> {
+public interface CredentialRepository extends JpaRepository<Credential, Long> {
 	public Optional<Credential> findByUsername(String username);
 	
 	public boolean existsByUsername(String username);

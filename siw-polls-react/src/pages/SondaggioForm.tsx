@@ -1,0 +1,125 @@
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { Domanda, Opzione, Sondaggio, Votazione, Voto } from '../types';
+import { postVoti } from '../service/SondaggioService';
+import styles from './Sondaggio.module.css'; // Assicurati di avere questo file
+
+function SondaggioForm() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    // Recuperiamo il sondaggio passato tramite il Link
+    const sondaggio = location.state?.sondaggioGiaCaricato as Sondaggio;
+    const [visibilita, setVisibilita] = useState<string>("PUBBLICA"); // Valore di default
+    // STATO: Memorizza le risposte { id_domanda: id_opzione }
+    const [risposte, setRisposte] = useState<{ [key: number]: number }>({});
+    // STATO: per disabilitare il bottone durante il caricamento
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    // Se l'utente arriva qui digitando l'URL manualmente senza passare dalla preview
+    if (!sondaggio) {
+        return <h2 className={styles.centerMessage}>Nessun sondaggio caricato. Torna alla home.</h2>;
+    }
+
+    // GESTIONE DEL CAMBIAMENTO (Click sui radio button)
+    const handleChange = (domandaId: number, opzioneId: number) => {
+        setRisposte(prev => ({
+            ...prev,
+            [domandaId]: opzioneId
+        }));
+    };
+
+    // GESTIONE DELL'INVIO - Ora è async!
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault(); 
+        
+        // Controlla se ha risposto a tutte le domande
+        if (Object.keys(risposte).length < sondaggio.domande.length) {
+            alert("Per favore, rispondi a tutte le domande prima di inviare.");
+            return;
+        }
+
+        const payload: Votazione = {
+            sondaggioId: sondaggio.id,
+            visibilita: visibilita,
+            voti: Object.keys(risposte).map(key => ({
+                domandaId: Number(key),
+                opzioneId: risposte[Number(key)]
+            }))
+        };
+
+        setIsSubmitting(true); // Disabilita il bottone
+
+        try {
+            // Aspettiamo che il backend salvi i dati
+            await postVoti(payload);
+            
+            alert("Voto registrato con successo!");
+            navigate(`/sondaggio/${sondaggio.id}`); // Lo riportiamo alla pagina del sondaggio
+            
+        } catch (error) {
+            console.error("Errore durante l'invio del voto:", error);
+            alert("Si è verificato un errore durante l'invio del voto. Riprova.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return(
+        <div className={styles.container}>
+            <h1 className={styles.titolo}>Vota: {sondaggio.titolo}</h1>
+            
+            <form onSubmit={handleSubmit} className={styles.section}>
+                {/* 1. Cicliamo tutte le DOMANDE */}
+                {sondaggio.domande.map((domanda: Domanda) => (
+                    <div key={domanda.id} className={styles.domandaCard}>
+                        <h3>{domanda.testo}</h3>
+                        
+                        {/* 2. Cicliamo tutte le OPZIONI per questa domanda */}
+                        <div className={styles.opzioniList}>
+                            {domanda.opzioni.map((opzione: Opzione) => (
+                                <div key={opzione.id} className={styles.opzioneItem}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                                        <input 
+                                            type="radio" 
+                                            name={`domanda_${domanda.id}`} 
+                                            value={opzione.id}
+                                            checked={risposte[domanda.id] === opzione.id}
+                                            onChange={() => handleChange(domanda.id, opzione.id)}
+                                            disabled={isSubmitting}
+                                        />
+                                        {opzione.testo}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+                <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>
+                        Come vuoi esprimere il tuo voto?
+                    </label>
+                    <select 
+                        value={visibilita} 
+                        onChange={(e) => setVisibilita(e.target.value)}
+                        style={{ padding: '8px', borderRadius: '4px', width: '100%' }}
+                    >
+                        <option value="NORMALE">Voto Pubblico (sarai associato al voto ma il voto sara rintracciabile e modificabile)</option>
+                        <option value="ANONIMA">Voto Anonimo (non sarai associato al voto ma il voto sara irrintracciabile e non modificabile)</option>
+                    </select>
+                </div>
+                <div className={styles.actionBox}>
+                    <button 
+                        type="submit" 
+                        className={styles.btnPrimary} 
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Invio in corso..." : "Invia Voto"}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+}
+
+export default SondaggioForm;

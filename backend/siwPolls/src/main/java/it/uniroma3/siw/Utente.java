@@ -123,4 +123,9 @@ public class Utente {
 	public void setPartecipazioni(List<Sondaggio> partecipazioni) {
 		this.partecipazioni = partecipazioni;
 	}
+
+	public void aggiungiPartecipazione(Sondaggio sondaggio) {
+		this.partecipazioni.add(sondaggio);
+		
+	}
 }

@@ -16,14 +16,23 @@ public class Voto {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private LocalDateTime dataVoto;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="utente_id")
-    private Utente utente;
+    @ManyToOne
+    @JoinColumn(name = "votazione_id")
+    private Votazione votazione;
+
+    @ManyToOne
+    @JoinColumn(name = "domanda_id")
+    private Domanda domanda;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Opzione opzione;
+
+	public Voto(Domanda domanda, Opzione opzione, Votazione v) {
+		this.domanda=domanda;
+		this.opzione=opzione;
+		this.votazione=v;
+		v.getVoti().add(this);
+	}
 
 	public Long getId() {
 		return id;
@@ -31,22 +40,6 @@ public class Voto {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public LocalDateTime getDataVoto() {
-		return dataVoto;
-	}
-
-	public void setDataVoto(LocalDateTime dataVoto) {
-		this.dataVoto = dataVoto;
-	}
-
-	public Utente getUtente() {
-		return utente;
-	}
-
-	public void setUtente(Utente utente) {
-		this.utente = utente;
 	}
 
 	public Opzione getOpzione() {
