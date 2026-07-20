@@ -1,18 +1,165 @@
-body {
-  background:
-    radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 50%),
-    linear-gradient(135deg, var(--colore-primario) 0%, var(--colore-sfondo-scuro) 100%);
-  color: var(--colore-testo);
-  padding: 0;
-  margin: 0;
+/* Contenitore principale che garantisce il blu scuro ovunque */
+.homeContainer {
+  padding: var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--bg-color); 
+  min-height: 100vh;
 }
 
-.contenitoreHome {
-  padding: 24px 16px 48px;
-  background: transparent;
-  width: 100%;
+/* Hero Section (Sfondo titolo) moderna con leggero gradiente */
+.heroSection {
+  text-align: center;
+  padding: 50px 20px;
+  margin-bottom: 50px;
+  background: linear-gradient(135deg, var(--bg-color) 0%, var(--surface-color) 100%);
+  border-radius: 16px; /* Bordo più arrotondato per un look moderno */
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Effetto vetro leggerissimo */
+  box-shadow: var(--shadow-md);
+}
+
+.heroSection h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: var(--spacing-sm);
+  margin-top: 0;
+}
+
+.heroSection p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+/* Messaggi di stato */
+.loadingMessage, .errorMessage {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.errorMessage {
+  color: var(--secondary-color);
+}
+
+/* Griglia forzata a 3 colonne su Desktop */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* Stili specifici della Card Moderna */
+.card {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  padding: 0; 
+}
+
+/* Effetto di sollevamento al passaggio del mouse */
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.imageContainer {
+  height: 200px;
+  width: 100%;
+  background-color: #0d1b2a; /* Blu scurissimo di fallback */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.placeholderImage {
+  display: flex;
   align-items: center;
-  box-sizing: border-box;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.cardContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.cardDescription {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: var(--spacing-md);
+  flex-grow: 1;
+  line-height: 1.5;
+}
+
+.cardMeta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Divisore elegante */
+}
+
+/* Pulsante Partecipa stilizzato */
+.btnPartecipa {
+  display: inline-block;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btnPartecipa:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.02); /* Leggero ingrandimento al click */
+}
+
+/* Responsività per Tablet e Smartphone */
+@media (max-width: 992px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr); /* 2 colonne sui tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+    grid-template-columns: 1fr; /* 1 colonna sugli smartphone */
+  }
+  
+  .heroSection {
+    padding: 30px 15px;
+  }
+  
+  .heroSection h1 {
+    font-size: 2rem;
+  }
 }

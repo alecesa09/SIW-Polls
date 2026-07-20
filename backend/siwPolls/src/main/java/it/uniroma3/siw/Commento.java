@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
@@ -14,7 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
-
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property="id")
 @Entity
 public class Commento {
 	
@@ -28,6 +31,7 @@ public class Commento {
 	private LocalDate data;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	@JoinColumn(name="sondaggio_id")
 	private Sondaggio sondaggio;
 	

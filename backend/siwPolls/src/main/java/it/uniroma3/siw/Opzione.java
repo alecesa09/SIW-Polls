@@ -2,6 +2,8 @@ package it.uniroma3.siw;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,9 +21,12 @@ public class Opzione {
 	
 	@NotBlank
 	private String testo;
+	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name="domanda_id")
 	private Domanda domanda;
+	
 	public Long getId() {
 		return id;
 	}

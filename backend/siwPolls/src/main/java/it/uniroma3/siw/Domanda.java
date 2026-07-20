@@ -3,6 +3,8 @@ package it.uniroma3.siw;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,6 +28,7 @@ public class Domanda {
 	private String testo;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name="sondaggio_id")
 	private Sondaggio sondaggio;
 	

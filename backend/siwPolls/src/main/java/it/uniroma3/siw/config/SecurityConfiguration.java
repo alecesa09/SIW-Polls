@@ -1,7 +1,11 @@
-package it.uniroma3.siw;
-
+package it.uniroma3.siw.config;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +20,8 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
+import it.uniroma3.siw.Credential;
+import it.uniroma3.siw.service.CredentialService;
 import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 @EnableWebSecurity 
@@ -81,8 +87,15 @@ public class SecurityConfiguration {
             });
     		});
     	
-    	
+    	CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+    	requestHandler.setCsrfRequestAttributeName(null);
 
+    	httpSecurity.csrf(csrf -> csrf
+    	    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+    	    .csrfTokenRequestHandler(requestHandler)
+    	    
+    	);
+    	httpSecurity.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }

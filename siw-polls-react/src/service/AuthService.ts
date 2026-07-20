@@ -1,15 +1,8 @@
 import api from "./api";
-import { BACKEND_URL } from '../components/config'; 
+import type { Utente } from "../types";
 export const AuthService = {
-  async getLog(): Promise<boolean> {
-    const { data } = await api.get<boolean>(`auth`); 
+  async getLog(): Promise<Utente> {
+    const { data } = await api.get<Utente>(`auth`); 
     return data;
   },
-  
-  logout: async () => {
-    await fetch(BACKEND_URL + '/logout', {
-      method: 'POST',
-      credentials: 'include' 
-    });
-  }
 };

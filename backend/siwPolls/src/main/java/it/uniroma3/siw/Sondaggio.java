@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +15,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,18 +39,26 @@ public class Sondaggio {
     private String immagine;
 
     @NotNull
-    private LocalDate dataScadenza;
-
+    private LocalDate dataScadenzaVoto;
+    
+    @JsonIgnore
     private LocalDate dataCreazione;
-
+    
+    @ManyToOne
+    @JoinColumn(name="utente_id")
+    @JsonIgnore
+    private Utente utente;
+    
     public enum Visibilita { PUBBLICO, PRIVATO }
-
+    
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Visibilita visibilita;
-
+    
+    @JsonIgnore
     @Column(unique = true)
     private String codiceAccesso;
-
+    
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Domanda> domande;
     
@@ -77,11 +90,11 @@ public class Sondaggio {
 	}
 
 	public LocalDate getDataScadenza() {
-		return dataScadenza;
+		return dataScadenzaVoto;
 	}
 
 	public void setDataScadenza(LocalDate dataScadenza) {
-		this.dataScadenza = dataScadenza;
+		this.dataScadenzaVoto = dataScadenza;
 	}
 
 	public LocalDate getDataCreazione() {
@@ -147,6 +160,14 @@ public class Sondaggio {
 
 	public void setCommenti(List<Commento> commenti) {
 		this.commenti = commenti;
+	}
+
+	public Utente getUtente() {
+		return utente;
+	}
+
+	public void setUtente(Utente utente) {
+		this.utente = utente;
 	} 
     
     

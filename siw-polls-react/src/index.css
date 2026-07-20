@@ -1,22 +1,26 @@
 :root {
+  /* Colori base (leggermente schiariti per risaltare sul buio) */
+  --primary-color: #4da3ff; 
+  --primary-hover: #1976d2;
+  --secondary-color: #e5437a; 
   
-  --primary-color: #1976d2; 
-  --primary-hover: #115293;
-  --secondary-color: #dc004e; 
+  /* Sfondi blu scuri armonizzati */
+  --bg-color: #02264a; /* Il tuo blu scuro originale */
+  --surface-color: #06396b; /* Un blu coerente ma più chiaro per le card */
   
-  --bg-color: #f4f6f8; 
-  --surface-color: #ffffff; 
-  --text-main: #333333;
-  --text-muted: #666666; 
+  /* Testi accessibili (WCAG compliant) */
+  --text-main: #f0f4f8; /* Bianco leggermente azzurrato */
+  --text-muted: #a0b2c6; /* Grigio-azzurro chiaro e ben leggibile */
   
+  /* Spaziature inalterate */
   --border-radius: 8px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   
-
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  /* Ombre adeguate ai fondi scuri */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 *, *::before, *::after {

@@ -1,47 +1,49 @@
-import { AppBar, Toolbar, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import logoAziendale from '../../assets/Logo.jpg';
-import { BACKEND_URL } from '../config'; 
+import { BACKEND_URL } from '../config'; // Assicurati che il path sia corretto
 import styles from './Nav.module.css';
+import { useAuth } from '../AuthContext';
 
-// [Speculazione] Ipotizzo che tu debba passare una funzione dal componente App 
-// per aggiornare lo stato utenteLoggato a false
-interface NavbarProps {
-  isLoggedIn: boolean;
-  onLogout: () => void; // Nuova prop
-}
-
-export default function Navbar({ isLoggedIn, onLogout }: NavbarProps) {
+export default function Navbar() {
+  const { utente } = useAuth();
   return (
-    <AppBar position="static" color="primary">
-      <Toolbar>
-        <Link to="/" className={styles.logoContainer}>
-          <img src={logoAziendale} alt="Logo" className={styles.logoImage} />
+    <header className={styles.header}>
+      <nav className={styles.navbar} aria-label="Navigazione principale">
+        
+        <Link to="/" className={styles.logoContainer} aria-label="Vai alla Home">
+          <img src={logoAziendale} alt="Logo Aziendale" className={styles.logoImage} />
         </Link>
-
-        <div className={styles.spacer}></div>
-
-        {isLoggedIn ? (
-          <>
-            <Button color="inherit" sx={{ fontWeight: 'bold' }}>
-              Crea Sondaggio
-            </Button>
-            {/* Sostituito href con onClick */}
-            <Button color="inherit" onClick={onLogout}>
-              Logout
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button color="inherit" href={`${BACKEND_URL}/login`}>
-              Accedi
-            </Button>
-            <Button color="inherit" variant="outlined" sx={{ marginLeft: 1, borderColor: 'white' }} href={`${BACKEND_URL}/register`}>
-              Registrati
-            </Button>
-          </>
-        )}
-      </Toolbar>
-    </AppBar>
+        <ul className={styles.navMenu}>
+          {utente ? (
+            <>
+              <li className={styles.navItem}>
+                <button className={`${styles.btn} ${styles.btnSecondary}`}>
+                  Crea Sondaggio
+                </button>
+              </li>
+              <li className={styles.navItem}>
+                <a href={`${BACKEND_URL}/utente`} className={`${styles.btn} ${styles.btnOutline}`}>
+                  Profilo
+                </a>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className={styles.navItem}>
+                <a href={`${BACKEND_URL}/login`} className={styles.navLink}>
+                  Accedi
+                </a>
+              </li>
+              <li className={styles.navItem}>
+                <a href={`${BACKEND_URL}/registrazione`} className={`${styles.btn} ${styles.btnPrimary}`}>
+                  Registrati
+                </a>
+              </li>
+            </>
+          )}
+        </ul>
+        
+      </nav>
+    </header>
   );
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
@@ -19,6 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 @JsonIdentityInfo(
 		  generator = ObjectIdGenerators.PropertyGenerator.class,
 		  property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class Utente {
 	
@@ -32,11 +35,21 @@ public class Utente {
 	@NotBlank @Column(nullable = false, unique = true) 
 	private String email;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy="utente")
+	List<Sondaggio> sondaggi;
+	
+	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="utente") 
 	private Credential credenziali;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     private List<Voto> voti;
+	
+	@JsonIgnore
+	@OneToMany
+    private List<Sondaggio> partecipazioni;
 	
 	public Long getId() {
 		return id;
@@ -105,5 +118,21 @@ public class Utente {
 
 	public void setVoti(List<Voto> voti) {
 		this.voti = voti;
+	}
+
+	public List<Sondaggio> getSondaggi() {
+		return sondaggi;
+	}
+
+	public void setSondaggi(List<Sondaggio> sondaggi) {
+		this.sondaggi = sondaggi;
+	}
+
+	public List<Sondaggio> getPartecipazioni() {
+		return partecipazioni;
+	}
+
+	public void setPartecipazioni(List<Sondaggio> partecipazioni) {
+		this.partecipazioni = partecipazioni;
 	}
 }

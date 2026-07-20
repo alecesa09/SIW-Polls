@@ -1,3 +1,25 @@
+/* Contenitore principale della navbar */
+.header {
+  background-color: var(--surface-color);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Layout flexbox per allineare logo e menu */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 70px;
+}
+
+/* Stili del Logo */
 .logoContainer {
   display: flex;
   align-items: center;
@@ -5,12 +27,95 @@
 }
 
 .logoImage {
-  height: 40px;
-  margin-right: 10px;
-  border-radius: 4px; /* [Speculazione] Rende il logo leggermente smussato se è quadrato */
+  height: 45px;
+  width: auto;
+  border-radius: 4px;
+  transition: opacity 0.3s ease;
 }
 
-/* Serve per occupare lo spazio vuoto e spingere i bottoni verso destra */
-.spacer {
-  flex-grow: 1;
+.logoImage:hover {
+  opacity: 0.85;
+}
+
+/* Lista di navigazione semantica */
+.navMenu {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+}
+
+/* Stile base per i link di testo (es. Accedi) */
+.navLink {
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: var(--spacing-sm) 0;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--primary-color);
+}
+
+/* Stile base per tutti i bottoni e link a forma di bottone */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+/* Variante Primaria (es. Registrati) */
+.btnPrimary {
+  background-color: var(--primary-color);
+  color: var(--surface-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.btnPrimary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Variante Secondaria (es. Crea Sondaggio) */
+.btnSecondary {
+  background-color: var(--secondary-color);
+  color: var(--surface-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.btnSecondary:hover {
+  background-color: #b0003a; /* Una sfumatura più scura del tuo secondary-color */
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Variante Outline (es. Profilo) */
+.btnOutline {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btnOutline:hover {
+  background-color: var(--primary-color);
+  color: var(--surface-color);
 }
