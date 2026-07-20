@@ -1,7 +1,11 @@
 package it.uniroma3.siw.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import it.uniroma3.siw.Sondaggio;
@@ -16,6 +20,11 @@ public class SondaggioService {
 	}
 	
 	public List<SondaggioDTO> getSondaggiRecenti(){
-		return sr.findTop6ByVisibilitaOrderByDataCreazioneDesc(Sondaggio.Visibilita.PUBBLICO);
+		Pageable pageable = PageRequest.of(0, 6);
+		return sr.findTop6RecentiAttivi(Sondaggio.Visibilita.PUBBLICO,LocalDate.now(),pageable);
+	}
+
+	public Optional<Sondaggio> getSondaggioById(Long id) {
+		return sr.findById(id);
 	}
 }

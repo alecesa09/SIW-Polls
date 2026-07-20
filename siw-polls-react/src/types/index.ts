@@ -39,8 +39,8 @@ export interface SondaggioDTO{
     immagine: string,
     dataScadenza: string;
 }
-// Tipo del Context
-interface AuthContextType {
+
+export interface AuthContextType {
   utente: Utente | null; 
   setUtente: (utente: Utente | null) => void;
 }

@@ -1,0 +1,178 @@
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--surface-color); /* Usa il blu coerente per le card/superfici */
+    color: var(--text-main);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+.centerMessage {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--text-main);
+}
+
+.errorContainer {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--secondary-color);
+}
+
+.linkHome {
+    display: inline-block;
+    margin-top: 15px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.linkHome:hover {
+    text-decoration: underline;
+}
+
+.header {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.titolo {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.descrizione {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.imageContainer {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.immagine {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scadenza {
+    font-weight: bold;
+    color: var(--text-main);
+    margin-top: var(--spacing-md);
+}
+
+.section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.section h2 {
+    color: var(--text-main);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: var(--spacing-sm);
+}
+
+.domandaCard {
+    background-color: var(--bg-color); /* Sfondo più scuro per le domande */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.domandaCard h3 {
+    margin-top: 0;
+    color: var(--text-main);
+    font-size: 1.2rem;
+}
+
+.opzioniList {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: var(--spacing-sm) 0 0 0;
+}
+
+.opzioneItem {
+    color: var(--text-muted);
+    padding: 4px 0;
+}
+
+.commentoCard {
+    border-left: 4px solid var(--primary-color);
+    background-color: var(--bg-color);
+    padding: var(--spacing-md);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin-bottom: var(--spacing-md);
+}
+
+.commentoMeta {
+    margin: 0 0 5px 0;
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+
+.commentoTesto {
+    margin: 0;
+    color: var(--text-main);
+}
+
+.noCommenti {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.actionBox {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.actionText {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1rem;
+}
+
+.btnPrimary {
+    display: inline-block;
+    background-color: #28a745; 
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btnPrimary:hover {
+    background-color: #218838;
+}
+
+.btnSecondary {
+    display: inline-block;
+    background-color: var(--primary-hover);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btnSecondary:hover {
+    background-color: var(--primary-color);
+}

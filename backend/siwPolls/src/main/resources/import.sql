@@ -6,10 +6,11 @@ INSERT INTO utente (id, nome, cognome, email) VALUES (4, 'alessio', 'cesaroni', 
 
 -- 2. Inserimento Credenziali (OneToOne con Utente) [verificato]
 -- [Speculazione] Si assume che il backend utilizzi BCrypt per l'hashing. La stringa sottostante corrisponde alla password in chiaro: 'password'
-INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (1, 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'ADMIN', 1);
+INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (1, 'admin', '$2a$12$cFQDGMZXEPVMNfrmLUG92.zyQyWSD.4XmqoM9d66z8GwwUguhB5ku', 'ADMIN', 1);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (2, 'user', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 2);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (3, 'giulia', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 3);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (4, 'cesa', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'ADMIN', 1);
+
 -- 3. Inserimento Sondaggi (ManyToOne con Utente) [verificato]
 -- Sondaggio 1 (Esistente)
 INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (1, 'Tecnologie Backend', 'Quali tecnologie preferisci per lo sviluppo web?', 'springBoot.png', '2026-07-19', '2026-12-31', 'PUBBLICO', 'TECH2026', 1);
@@ -19,7 +20,7 @@ INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_s
 INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (3, 'Database Relazionali vs NoSQL', 'Raccolta dati sulle preferenze dei DBMS per i nuovi microservizi.', 'dbms.jpg', '2026-07-10', '2026-10-31', 'PUBBLICO', 'DB2026', 2);
 -- Sondaggio 4
 INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (4, 'Cloud Providers', 'Dove preferisci fare il deploy delle tue applicazioni enterprise?', 'cloudProvider.png', '2026-07-18', '2026-12-15', 'PUBBLICO', 'CLOUD26', 1);
--- Sondaggio 5 (Sondaggio Privato)
+-- Sondaggio 5
 INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (5, 'Eventi Tech Italia', 'Sondaggio riservato per l organizzazione della trasferta aziendale.', 'TechEvent.jpg', '2026-07-19', '2026-09-01', 'PUBBLICO', 'EVITA26', 2);
 -- Sondaggio 6
 INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (6, 'Editor di Testo e IDE', 'Qual e lo strumento definitivo per scrivere codice in comodita?', 'IDE.png', '2026-07-01', '2026-08-30', 'PUBBLICO', 'IDE2026', 1);

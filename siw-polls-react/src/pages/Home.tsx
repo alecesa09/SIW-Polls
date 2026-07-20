@@ -3,20 +3,14 @@ import { Link } from 'react-router-dom';
 import apiClient from '../service/api'; // [Speculazione] Assumo che l'istanza Axios si trovi qui
 import styles from './Home.module.css';
 import { BACKEND_URL } from '../components/config';
-
-// L'interfaccia "Light" per la Home Page (senza commenti, domande e opzioni)
-export interface SondaggioLight {
-  id: number;
-  titolo: string;
-  descrizione: string;
-  immagine: string | null;
-  dataScadenza: string;
-}
+import type { SondaggioDTO } from '../types';
+import { useAuth } from '../components/AuthContext';
 
 export default function Home() {
-  const [sondaggi, setSondaggi] = useState<SondaggioLight[]>([]);
+  const [sondaggi, setSondaggi] = useState<SondaggioDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { utente } = useAuth();//per il momnto non lo uso decidi se levarlo una volta finito
 
   useEffect(() => {
     const fetchSondaggiRecenti = async () => {
@@ -70,12 +64,11 @@ export default function Home() {
               
               <div className={styles.cardContent}>
                 <h2 className={styles.cardTitle}>{sondaggio.titolo}</h2>
-                <p className={styles.cardDescription}>{sondaggio.descrizione}</p>
                 <p className={styles.cardMeta}>
                   <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT')}
                 </p>
                 
-                <Link to={`/sondaggi/${sondaggio.id}`} className={styles.btnPartecipa}>
+                <Link to={`/sondaggio/${sondaggio.id}`} className={styles.btnPartecipa}>
                   Partecipa
                 </Link>
               </div>

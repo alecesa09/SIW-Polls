@@ -40,10 +40,6 @@ public class Utente {
 	List<Sondaggio> sondaggi;
 	
 	@JsonIgnore
-	@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="utente") 
-	private Credential credenziali;
-	
-	@JsonIgnore
 	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     private List<Voto> voti;
 	
@@ -102,14 +98,6 @@ public class Utente {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public Credential getCredenziali() {
-		return credenziali;
-	}
-
-	public void setCredenziali(Credential credenziali) {
-		this.credenziali = credenziali;
 	}
 
 	public List<Voto> getVoti() {

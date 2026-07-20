@@ -6,7 +6,8 @@ import Navbar from './components/nav/Nav.tsx';
 import Home from './pages/Home.tsx';
 import Sondaggio from './pages/Sondaggio.tsx';
 import { AuthService } from './service/AuthService';
-
+import NotFound from './pages/NotFound.tsx';
+import ServerError from './pages/ServerError.tsx';
 function App() {
 
   const [utente, setUtente] = useState<Utente | null>(null);
@@ -19,7 +20,7 @@ function App() {
         setUtente(userData);
       } catch (error) {
         console.error("Errore recupero dati:", error);
-        setUtente(null); // In caso di errore, ci assicuriamo che lo stato sia null
+        setUtente(null);
       } finally {
         setCaricamento(false);
       }
@@ -36,18 +37,20 @@ function App() {
     );
   }
 
-  // 3. Calcoliamo il booleano per i componenti che richiedono solo true/false
-  const isLoggedIn = utente !== null;
-
   return (
-    // 4. Avvolgi tutto nel Provider, passando lo stato e la funzione per aggiornarlo
     <AuthContext.Provider value={{ utente, setUtente }}>
       <BrowserRouter>
-        {/* Passiamo isLoggedIn calcolato alla Navbar */}
-        <Navbar isLoggedIn={isLoggedIn} />
+        <Navbar/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sondaggio/:id" element={<Sondaggio />} />
+          <Route path="/500" element={<ServerError />} />
+
+
+
+          
+          {/* Rotta 404 Catch-All: DEVE essere l'ultima Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AuthContext.Provider>

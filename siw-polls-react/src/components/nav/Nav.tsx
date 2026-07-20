@@ -23,7 +23,7 @@ export default function Navbar() {
               </li>
               <li className={styles.navItem}>
                 <a href={`${BACKEND_URL}/utente`} className={`${styles.btn} ${styles.btnOutline}`}>
-                  Profilo
+                  ciao {utente.nome}
                 </a>
               </li>
             </>
