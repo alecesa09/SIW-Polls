@@ -51,6 +51,11 @@ export interface Voto{
 export interface Votazione {
   sondaggioId: number;
   visibilita: string;
-  votazione: Voto[];
+  voti: Voto[];
 }
-  
+
+export interface Statistica {
+  domandaId: number;
+  opzioneId: number;
+  numeroVoti: number;
+}

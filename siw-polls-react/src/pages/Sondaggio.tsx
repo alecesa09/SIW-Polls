@@ -2,29 +2,46 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../components/config';
 import { useAuth } from '../components/AuthContext';
-import getSondaggio from "../service/SondaggioService";
-import type { Sondaggio } from '../types';
+import { getSondaggio, getPartecipazione, getCommenti, getStatistiche } from "../service/SondaggioService";
+import type { Sondaggio, Commento, Statistica } from '../types';
 import styles from './Sondaggio.module.css';
 
-export default function SondaggioComponent() {
+export default function sondaggio() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { utente } = useAuth(); 
-    
+    const { utente } = useAuth();
+
     const [sondaggio, setSondaggio] = useState<Sondaggio>();
+    const [commenti, setCommenti] = useState<Commento[]>([]);
+    const [statistiche, setStatistiche] = useState<Statistica[]>([]);
+    const [haGiaVotato, setHaGiaVotato] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchSondaggio = async () => {
+        const fetchDati = async () => {
             if (!id) {
                 setError("ID del sondaggio mancante.");
                 setLoading(false);
                 return;
             }
             try {
-                const response = await getSondaggio(id);
-                setSondaggio(response); 
+                const sondaggioData = await getSondaggio(id);
+                setSondaggio(sondaggioData);
+                if (utente) {
+                    const [giaVotato, commentiData] = await Promise.all([
+                        getPartecipazione(id),
+                        getCommenti(id)
+                    ]);
+
+                    setHaGiaVotato(giaVotato);
+                    setCommenti(commentiData);
+
+                    if (giaVotato) {
+                        const statisticheData = await getStatistiche(id);
+                        setStatistiche(statisticheData);
+                    }
+                }
             } catch (err: any) {
                 console.error("Errore nel recupero del sondaggio:", err);
                 if (err.response && err.response.status === 404) {
@@ -37,12 +54,12 @@ export default function SondaggioComponent() {
             } finally {
                 setLoading(false);
             }
-        }
-        fetchSondaggio();
-    }, [id, navigate]);
+        };
+        fetchDati();
+    }, [id, navigate, utente]);
 
     if (loading) return <h2 className={styles.centerMessage}>Caricamento in corso...</h2>;
-    
+
     if (error) {
         return (
             <div className={styles.errorContainer}>
@@ -59,19 +76,27 @@ export default function SondaggioComponent() {
         year: 'numeric', month: 'long', day: 'numeric'
     });
 
+    // Helper: recupera il conteggio voti per una data opzione dalle statistiche caricate
+    const getConteggioVoti = (domandaId: number, opzioneId: number): number => {
+        const stat = statistiche.find(
+            s => s.domandaId === domandaId && s.opzioneId === opzioneId
+        );
+        return stat ? stat.numeroVoti : 0;
+    };
+
+    const mostraStatistiche = utente && haGiaVotato && statistiche.length > 0;
+
     return (
         <div className={styles.container}>
-            
-            {/* INTESTAZIONE SONDAGGIO */}
             <header className={styles.header}>
                 <h1 className={styles.titolo}>{sondaggio.titolo}</h1>
                 <p className={styles.descrizione}>{sondaggio.descrizione}</p>
-                
+
                 {sondaggio.immagine && (
                     <div className={styles.imageContainer}>
-                        <img 
-                            src={`${BACKEND_URL}/immagini/${sondaggio.immagine}`} 
-                            alt={sondaggio.titolo} 
+                        <img
+                            src={`${BACKEND_URL}/immagini/${sondaggio.immagine}`}
+                            alt={sondaggio.titolo}
                             className={styles.immagine}
                         />
                     </div>
@@ -81,7 +106,6 @@ export default function SondaggioComponent() {
                 </p>
             </header>
 
-            {/* DOMANDE E OPZIONI */}
             <section className={styles.section}>
                 <h2>Domande del Sondaggio ({sondaggio.domande.length})</h2>
                 {sondaggio.domande.map((domanda) => (
@@ -89,22 +113,28 @@ export default function SondaggioComponent() {
                         <h3>{domanda.testo}</h3>
                         <ul className={styles.opzioniList}>
                             {domanda.opzioni.map((opzione) => (
-                                <li key={opzione.id} className={styles.opzioneItem}>{opzione.testo}</li>
+                                <li key={opzione.id} className={styles.opzioneItem}>
+                                    {opzione.testo}
+                                    {mostraStatistiche && (
+                                        <span style={{ marginLeft: '10px', opacity: 0.75 }}>
+                                            — {getConteggioVoti(domanda.id, opzione.id)} voti
+                                        </span>
+                                    )}
+                                </li>
                             ))}
                         </ul>
                     </div>
                 ))}
             </section>
 
-            {/* SEZIONE COMMENTI - Visibile solo se l'utente è loggato */}
             {utente && (
                 <section className={styles.section}>
-                    <h2>Commenti ({sondaggio.commenti?.length || 0})</h2>
-                    {sondaggio.commenti && sondaggio.commenti.length > 0 ? (
-                        sondaggio.commenti.map((commento) => (
+                    <h2>Commenti ({commenti.length})</h2>
+                    {commenti.length > 0 ? (
+                        commenti.map((commento) => (
                             <div key={commento.id} className={styles.commentoCard}>
                                 <p className={styles.commentoMeta}>
-                                    <span><strong>{commento.utente.nome} {commento.utente.cognome}</strong></span> 
+                                    <span><strong>{commento.utente.nome} {commento.utente.cognome}</strong></span>
                                     <span> - {new Date(commento.data).toLocaleDateString('it-IT')}</span>
                                 </p>
                                 <p className={styles.commentoTesto}>{commento.testo}</p>
@@ -116,18 +146,21 @@ export default function SondaggioComponent() {
                 </section>
             )}
 
-            {/* ZONA AZIONE IN FONDO */}
             <div className={styles.actionBox}>
                 {utente ? (
-                    <div>
-                        <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
-                        <Link 
-                            to={`/sondaggio/${id}/vota`} 
-                            state={{ sondaggioGiaCaricato: sondaggio }} 
-                            className={styles.btnPrimary}>
-                            Vai al form di Votazione
-                        </Link>
-                    </div>
+                    haGiaVotato ? (
+                        <p className={styles.actionText}>Hai già votato questo sondaggio. Grazie per la partecipazione!</p>
+                    ) : (
+                        <div>
+                            <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
+                            <Link
+                                to={`/sondaggio/${id}/vota`}
+                                state={{ sondaggioGiaCaricato: sondaggio }}
+                                className={styles.btnPrimary}>
+                                Vai al form di Votazione
+                            </Link>
+                        </div>
+                    )
                 ) : (
                     <div>
                         <p className={styles.actionText}>Devi essere registrato per poter votare e leggere i commenti.</p>
@@ -137,7 +170,6 @@ export default function SondaggioComponent() {
                     </div>
                 )}
             </div>
-
         </div>
     );
 }

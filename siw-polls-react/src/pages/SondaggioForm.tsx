@@ -7,21 +7,14 @@ import styles from './Sondaggio.module.css'; // Assicurati di avere questo file
 function SondaggioForm() {
     const location = useLocation();
     const navigate = useNavigate();
-    
-    // Recuperiamo il sondaggio passato tramite il Link
     const sondaggio = location.state?.sondaggioGiaCaricato as Sondaggio;
-    const [visibilita, setVisibilita] = useState<string>("PUBBLICA"); // Valore di default
-    // STATO: Memorizza le risposte { id_domanda: id_opzione }
+    const [visibilita, setVisibilita] = useState<string>("PUBBLICA");
     const [risposte, setRisposte] = useState<{ [key: number]: number }>({});
-    // STATO: per disabilitare il bottone durante il caricamento
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    // Se l'utente arriva qui digitando l'URL manualmente senza passare dalla preview
     if (!sondaggio) {
         return <h2 className={styles.centerMessage}>Nessun sondaggio caricato. Torna alla home.</h2>;
     }
-
-    // GESTIONE DEL CAMBIAMENTO (Click sui radio button)
     const handleChange = (domandaId: number, opzioneId: number) => {
         setRisposte(prev => ({
             ...prev,
@@ -29,11 +22,9 @@ function SondaggioForm() {
         }));
     };
 
-    // GESTIONE DELL'INVIO - Ora è async!
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); 
         
-        // Controlla se ha risposto a tutte le domande
         if (Object.keys(risposte).length < sondaggio.domande.length) {
             alert("Per favore, rispondi a tutte le domande prima di inviare.");
             return;
@@ -55,7 +46,7 @@ function SondaggioForm() {
             await postVoti(payload);
             
             alert("Voto registrato con successo!");
-            navigate(`/sondaggio/${sondaggio.id}`); // Lo riportiamo alla pagina del sondaggio
+            navigate(`/sondaggio/${sondaggio.id}`);
             
         } catch (error) {
             console.error("Errore durante l'invio del voto:", error);
@@ -70,7 +61,6 @@ function SondaggioForm() {
             <h1 className={styles.titolo}>Vota: {sondaggio.titolo}</h1>
             
             <form onSubmit={handleSubmit} className={styles.section}>
-                {/* 1. Cicliamo tutte le DOMANDE */}
                 {sondaggio.domande.map((domanda: Domanda) => (
                     <div key={domanda.id} className={styles.domandaCard}>
                         <h3>{domanda.testo}</h3>

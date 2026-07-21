@@ -62,7 +62,9 @@ public class Sondaggio {
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Domanda> domande;
     
+   
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Commento> commenti;
 
 	public String getTitolo() {

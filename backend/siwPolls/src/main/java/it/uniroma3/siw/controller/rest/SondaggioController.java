@@ -1,6 +1,8 @@
 package it.uniroma3.siw.controller.rest;
+import it.uniroma3.siw.Commento;
 import it.uniroma3.siw.Sondaggio;
 import it.uniroma3.siw.dto.SondaggioDTO;
+import it.uniroma3.siw.dto.StatisticheDTO;
 import it.uniroma3.siw.dto.VotazioneDTO;
 import it.uniroma3.siw.dto.VotoDTO;
 import it.uniroma3.siw.service.SondaggioService;
@@ -29,7 +31,7 @@ public class SondaggioController {
 	public List<SondaggioDTO> sondaggiRecenti() {
 		return ss.getSondaggiRecenti();
 	}
-	
+	//levare i commenti da qua non li puoi mandare anche se l utente non è loggato
 	@GetMapping("rest/sondaggio/{id}")
 	public ResponseEntity<Sondaggio> getSondaggio(@PathVariable("id") Long id) {
 	    Optional<Sondaggio> sondaggioOpt = ss.getSondaggioById(id);
@@ -51,4 +53,19 @@ public class SondaggioController {
         
         return "Voti registrati con successo!";
     }
+	
+	@GetMapping("rest/sondaggio/partecipazione/{id}")
+	public boolean getPArtecipazioneSondaggio(@PathVariable("id") Long id,Principal principal) {
+	    return ss.controllaPartecipazione(id,principal);
+	}
+	
+	@GetMapping("rest/sondaggio/statistiche/{id}")
+	public List<StatisticheDTO> getStatisticheSondaggio(@PathVariable("id") Long id) {
+	    return ss.getStatistiche(id);
+	}
+	
+	@GetMapping("rest/sondaggio/commenti/{id}")
+	public List<Commento> getCommentiSondaggio(@PathVariable("id") Long id) {
+	    return ss.getCommenti(id);
+	}
 }

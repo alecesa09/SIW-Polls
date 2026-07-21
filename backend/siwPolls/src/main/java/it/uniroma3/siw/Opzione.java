@@ -1,5 +1,6 @@
 package it.uniroma3.siw;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -26,6 +28,10 @@ public class Opzione {
 	@JsonIgnore
 	@JoinColumn(name="domanda_id")
 	private Domanda domanda;
+	
+	@OneToMany(mappedBy = "opzione")
+	@JsonIgnore
+	private List<Voto> voti;
 	
 	public Long getId() {
 		return id;
@@ -61,5 +67,11 @@ public class Opzione {
 		return Objects.equals(id, other.id);
 	}
 	
-	
+	public List<Voto> getVoti() {
+	    return voti;
+	}
+
+	public void setVoti(List<Voto> voti) {
+	    this.voti = voti;
+	}
 }

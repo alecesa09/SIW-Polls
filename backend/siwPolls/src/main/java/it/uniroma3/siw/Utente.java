@@ -15,6 +15,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
@@ -41,10 +42,10 @@ public class Utente {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
-    private List<Voto> voti;
+    private List<Votazione> voti;
 	
 	@JsonIgnore
-	@OneToMany
+	@ManyToMany
     private List<Sondaggio> partecipazioni;
 	
 	public Long getId() {
@@ -100,11 +101,11 @@ public class Utente {
 		this.id = id;
 	}
 
-	public List<Voto> getVoti() {
+	public List<Votazione> getVoti() {
 		return voti;
 	}
 
-	public void setVoti(List<Voto> voti) {
+	public void setVoti(List<Votazione> voti) {
 		this.voti = voti;
 	}
 
