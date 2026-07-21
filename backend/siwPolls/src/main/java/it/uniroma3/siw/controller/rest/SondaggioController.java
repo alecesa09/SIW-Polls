@@ -97,6 +97,6 @@ public class SondaggioController {
 	
 	@GetMapping("rest/sondaggi/votati/utente")
 	public List<SondaggioDTO> getSondaggiVotatiDaUtente(Principal principal) {
-	     return ss.getSondaggiVotatiUtente(principal);//ancora attivi
+	     return ss.getSondaggiVotatiUtente(principal);
 	}
 }

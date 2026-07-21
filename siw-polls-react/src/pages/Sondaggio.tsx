@@ -17,6 +17,7 @@ export default function sondaggio() {
     const [haGiaVotato, setHaGiaVotato] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [scaduto,setScaduto]= useState<boolean>(false);
 
     useEffect(() => {
         const fetchDati = async () => {
@@ -33,7 +34,11 @@ export default function sondaggio() {
                         controllaPartecipazione(id),
                         getCommenti(id)
                     ]);
-
+                    setScaduto(
+                        sondaggioData?.dataScadenza 
+                            ? new Date(sondaggioData.dataScadenza).getTime() < Date.now() 
+                            : false
+                        );
                     setHaGiaVotato(giaVotato);
                     setCommenti(commentiData);
 
@@ -151,15 +156,19 @@ export default function sondaggio() {
                     haGiaVotato ? (
                         <p className={styles.actionText}>Hai già votato questo sondaggio. Grazie per la partecipazione!</p>
                     ) : (
-                        <div>
-                            <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
-                            <Link
-                                to={`/sondaggio/${id}/vota`}
-                                state={{ sondaggioGiaCaricato: sondaggio }}
-                                className={styles.btnPrimary}>
-                                Vai al form di Votazione
-                            </Link>
-                        </div>
+                        scaduto ? (
+                             <p className={styles.actionText}>Il sondaggio è scaduto</p>
+                            ) : (
+                                <div>
+                                    <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
+                                    <Link
+                                        to={`/sondaggio/${id}/vota`}
+                                        state={{ sondaggioGiaCaricato: sondaggio }}
+                                        className={styles.btnPrimary}>
+                                        Vai al form di Votazione
+                                    </Link>
+                                </div>
+                                )
                     )
                 ) : (
                     <div>

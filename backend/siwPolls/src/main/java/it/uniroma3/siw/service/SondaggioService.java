@@ -30,6 +30,7 @@ import it.uniroma3.siw.dto.VotazioneDTO;
 import it.uniroma3.siw.dto.VotoDTO;
 import it.uniroma3.siw.exception.IllegalVoteException;
 import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
+import it.uniroma3.siw.exception.SondaggioScadutoException;
 import it.uniroma3.siw.exception.UtenteNotFoundException;
 import it.uniroma3.siw.exception.VotazioneIncompletaException;
 import it.uniroma3.siw.exception.VotoGiaEspressoException;
@@ -78,6 +79,10 @@ public class SondaggioService {
 	public void salvaVotazione(VotazioneDTO votazione,Principal principal) {
 		Sondaggio sondaggio = sr.findById(votazione.getSondaggioId()).orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId()));
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		
+		if (sondaggio.getDataScadenza().isBefore(LocalDate.now())) {
+		    throw new SondaggioScadutoException();
+		}
 		
 		if (ur.existsByIdAndPartecipazioniId(utente.getId(), sondaggio.getId())) {
 		    throw new VotoGiaEspressoException();
@@ -160,8 +165,12 @@ public class SondaggioService {
 		return sr.findByUtente(utente);
 	}
 	public List<SondaggioDTO> getSondaggiVotatiUtente(Principal principal) {
+		logger.info("inizio ricerca sondaggi Votati utente e ancora modificabili");
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
-		logger.info(utente.getId().toString());
+		List<SondaggioDTO> sondaggi = sr.findSondaggiVotatiPerUtente(utente.getId());
+		for(SondaggioDTO sondaggio: sondaggi) {
+			logger.info("-" + sondaggio.getId().toString());
+			}
 		return sr.findSondaggiVotatiPerUtente(utente.getId());
 	}
 	
