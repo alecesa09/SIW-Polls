@@ -163,3 +163,71 @@
     font-size: 2rem;
   }
 }
+
+.pageLayout {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+}
+
+.mainColumn {
+  flex: 1;
+  min-width: 0; /* evita overflow della grid in flex */
+}
+
+.sidebarColumn {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px; /* sotto la navbar sticky, regola in base alla sua altezza */
+}
+
+.codiceAccessoBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.codiceAccessoTitle {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.codiceAccessoText {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.codiceAccessoForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.codiceAccessoInput {
+  padding: 10px 14px;
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.codiceAccessoErrore {
+  color: var(--secondary-color);
+  font-size: 0.85rem;
+  margin-top: var(--spacing-sm);
+}
+
+/* Su schermi piccoli, la colonna laterale va sotto invece che a fianco */
+@media (max-width: 768px) {
+  .pageLayout {
+    flex-direction: column;
+  }
+  .sidebarColumn {
+    width: 100%;
+    position: static;
+  }
+}

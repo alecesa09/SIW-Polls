@@ -42,11 +42,10 @@ function SondaggioForm() {
         setIsSubmitting(true); // Disabilita il bottone
 
         try {
-            // Aspettiamo che il backend salvi i dati
             await postVoti(payload);
             
             alert("Voto registrato con successo!");
-            navigate(`/sondaggio/${sondaggio.id}`);
+            navigate(`/sondaggio/${sondaggio.id}/commentoForm`);
             
         } catch (error) {
             console.error("Errore durante l'invio del voto:", error);

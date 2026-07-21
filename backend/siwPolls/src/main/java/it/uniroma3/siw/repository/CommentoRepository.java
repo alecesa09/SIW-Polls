@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.uniroma3.siw.Commento;
 
-public interface CommentiRepository extends JpaRepository<Commento,Long > {
+public interface CommentoRepository extends JpaRepository<Commento,Long > {
 
 	List<Commento> findBySondaggioId(Long id);
 

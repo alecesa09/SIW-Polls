@@ -48,6 +48,7 @@ export interface Voto{
   domandaId: number;
   opzioneId: number;
 }
+
 export interface Votazione {
   sondaggioId: number;
   visibilita: string;
@@ -58,4 +59,8 @@ export interface Statistica {
   domandaId: number;
   opzioneId: number;
   numeroVoti: number;
+}
+
+export interface testo{
+  contenuto: string;
 }

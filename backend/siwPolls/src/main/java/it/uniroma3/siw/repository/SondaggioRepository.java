@@ -2,6 +2,7 @@ package it.uniroma3.siw.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -25,5 +26,15 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 		       "WHERE s.id = :id " +
 		       "GROUP BY d.id, o.id")
 	List<StatisticheDTO> getStatistiche(@Param("id") Long id);
+	
+	@Query("SELECT s FROM Sondaggio s WHERE s.visibilita = 'PUBBLICO' AND LOWER(s.titolo) LIKE LOWER(CONCAT('%', :str, '%'))")
+	List<SondaggioDTO> search(@Param("str") String str, Pageable pageable);
+
+	SondaggioDTO findByCodiceAccesso(String str);
+	@Query("SELECT s FROM Sondaggio s WHERE s.visibilita = PUBBLICO AND s.id = :id")
+	Optional<Sondaggio> findByIdPubblici(@Param("id") Long id);
+	List<SondaggioDTO> findByUtente(Utente utente);
+	@Query("SELECT new it.uniroma3.siw.dto.SondaggioDTO(v.sondaggio.id, v.sondaggio.titolo, v.sondaggio.immagine, v.sondaggio.dataScadenzaVoto) FROM Votazione v WHERE v.utente.id = :id AND v.sondaggio.dataScadenzaVoto > CURRENT_DATE")
+	List<SondaggioDTO> findSondaggiVotatiPerUtente(@Param("id") Long id);
 	
 }

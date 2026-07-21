@@ -8,4 +8,12 @@ const api = axios.create({
   xsrfHeaderName: 'X-XSRF-TOKEN'
 });
 
+export const apiLogout = axios.create({
+  baseURL: BACKEND_URL,
+  withCredentials: true,
+  withXSRFToken: true,  
+  xsrfCookieName: 'XSRF-TOKEN', 
+  xsrfHeaderName: 'X-XSRF-TOKEN'
+});
+
 export default api;

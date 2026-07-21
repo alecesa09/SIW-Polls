@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -45,8 +47,8 @@ public class SecurityConfiguration {
     @Bean 
     protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception { 
     	httpSecurity.authorizeHttpRequests(authorize -> { 
-    		authorize.requestMatchers(HttpMethod.GET, "/rest/sondaggio/commenti/**","/rest/sondaggio/statistiche/**" ). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
-    		authorize.requestMatchers(HttpMethod.POST, "/rest/commento/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
+    		authorize.requestMatchers(HttpMethod.GET, "/rest/sondaggio/commenti/**","/rest/sondaggio/statistiche/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
+    		authorize.requestMatchers(HttpMethod.POST, "/rest/sondaggio/commento/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
     		authorize.requestMatchers(HttpMethod.GET, "/admin/**"). hasAnyAuthority(Credential.ADMIN_ROLE) ; 
     		authorize.requestMatchers(HttpMethod.POST, "/admin/**"). hasAnyAuthority(Credential.ADMIN_ROLE) ; 
     		authorize.anyRequest().permitAll(); });
@@ -73,12 +75,12 @@ public class SecurityConfiguration {
     		);
     	
     	httpSecurity.logout(logout -> { 
-    		logout.logoutUrl("/logout"); 
-    		logout.logoutSuccessUrl("/");
-    		logout.invalidateHttpSession(true); 
-    		logout.deleteCookies("JSESSIONID"); 
-    		logout.clearAuthentication(true); 
-    		logout.permitAll(); 
+    		logout.logoutUrl("/logout");
+    		logout.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)) ;
+    		logout.invalidateHttpSession(true);
+    		logout.clearAuthentication(true);
+    		logout.deleteCookies("JSESSIONID", "XSRF-TOKEN") ;
+    		logout.permitAll();
     		});
     	
     	httpSecurity

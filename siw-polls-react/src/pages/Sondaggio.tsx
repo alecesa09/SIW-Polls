@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../components/config';
 import { useAuth } from '../components/AuthContext';
-import { getSondaggio, getPartecipazione, getCommenti, getStatistiche } from "../service/SondaggioService";
+import { getSondaggio, controllaPartecipazione, getCommenti, getStatistiche } from "../service/SondaggioService";
 import type { Sondaggio, Commento, Statistica } from '../types';
 import styles from './Sondaggio.module.css';
 
@@ -30,7 +30,7 @@ export default function sondaggio() {
                 setSondaggio(sondaggioData);
                 if (utente) {
                     const [giaVotato, commentiData] = await Promise.all([
-                        getPartecipazione(id),
+                        controllaPartecipazione(id),
                         getCommenti(id)
                     ]);
 

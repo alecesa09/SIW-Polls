@@ -31,7 +31,7 @@ public class SondaggioController {
 	public List<SondaggioDTO> sondaggiRecenti() {
 		return ss.getSondaggiRecenti();
 	}
-	//levare i commenti da qua non li puoi mandare anche se l utente non è loggato
+	
 	@GetMapping("rest/sondaggio/{id}")
 	public ResponseEntity<Sondaggio> getSondaggio(@PathVariable("id") Long id) {
 	    Optional<Sondaggio> sondaggioOpt = ss.getSondaggioById(id);
@@ -55,7 +55,7 @@ public class SondaggioController {
     }
 	
 	@GetMapping("rest/sondaggio/partecipazione/{id}")
-	public boolean getPArtecipazioneSondaggio(@PathVariable("id") Long id,Principal principal) {
+	public boolean getControlloPartecipazioneSondaggio(@PathVariable("id") Long id,Principal principal) {
 	    return ss.controllaPartecipazione(id,principal);
 	}
 	
@@ -67,5 +67,36 @@ public class SondaggioController {
 	@GetMapping("rest/sondaggio/commenti/{id}")
 	public List<Commento> getCommentiSondaggio(@PathVariable("id") Long id) {
 	    return ss.getCommenti(id);
+	}
+	
+	@GetMapping("rest/sondaggio/search/{str}")
+	public List<SondaggioDTO> getSondaggioByTitolo(@PathVariable("str") String str) {
+	    return ss.searchSondaggio(str);
+	}
+	
+	@GetMapping("rest/sondaggio/searchPriv/{str}")
+	public SondaggioDTO getSondaggioByCodiceAcesso(@PathVariable("str") String str) {
+	    return ss.searchSondaggiopriv(str);
+	}
+	
+	@PostMapping("rest/sondaggio/commento/{id}")
+	public ResponseEntity<String> aggiungiCommento(
+	        @PathVariable("id") Long idSondaggio, 
+	        @RequestBody String testoCommento,
+	        Principal principal) {
+		
+	     ss.salvaCommento(idSondaggio, testoCommento, principal);
+	    
+	    return ResponseEntity.ok("Commento registrato con successo!");
+	}
+	
+	@GetMapping("rest/sondaggio/utente")
+	public List<SondaggioDTO> getSondaggiCreatiDaUtente(Principal principal) {
+	     return ss.getSondaggiPerUtente(principal);
+	}
+	
+	@GetMapping("rest/sondaggi/votati/utente")
+	public List<SondaggioDTO> getSondaggiVotatiDaUtente(Principal principal) {
+	     return ss.getSondaggiVotatiUtente(principal);//ancora attivi
 	}
 }

@@ -33,7 +33,7 @@ import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
 import it.uniroma3.siw.exception.UtenteNotFoundException;
 import it.uniroma3.siw.exception.VotazioneIncompletaException;
 import it.uniroma3.siw.exception.VotoGiaEspressoException;
-import it.uniroma3.siw.repository.CommentiRepository;
+import it.uniroma3.siw.repository.CommentoRepository;
 import it.uniroma3.siw.repository.CredentialRepository;
 import it.uniroma3.siw.repository.DomandaRepository;
 import it.uniroma3.siw.repository.OpzioneRepository;
@@ -50,11 +50,11 @@ public class SondaggioService {
 	private final UtenteRepository ur;
 	private final DomandaRepository dr;
 	private final VotazioneRepository vr;
-	private final CommentiRepository cr;
+	private final CommentoRepository cr;
 
 
 	public SondaggioService(SondaggioRepository sr, OpzioneRepository or, UtenteRepository ur, DomandaRepository dr,
-			VotazioneRepository vr, CommentiRepository cr) {
+			VotazioneRepository vr, CommentoRepository cr) {
 		this.sr = sr;
 		this.or = or;
 		this.ur = ur;
@@ -63,16 +63,18 @@ public class SondaggioService {
 		this.cr = cr;
 	}
 	private static final Logger logger = LoggerFactory.getLogger(SondaggioService.class);
+	
+	@Transactional(readOnly=true)
 	public List<SondaggioDTO> getSondaggiRecenti(){
 		Pageable pageable = PageRequest.of(0, 6);
 		return sr.findTop6RecentiAttivi(Sondaggio.Visibilita.PUBBLICO,LocalDate.now(),pageable);
 	}
-
+	@Transactional(readOnly=true)
 	public Optional<Sondaggio> getSondaggioById(Long id) {
-		return sr.findById(id);
+		return sr.findByIdPubblici(id);
 	}
 	
-	@Transactional(isolation = Isolation.SERIALIZABLE,rollbackFor = Exception.class)
+	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void salvaVotazione(VotazioneDTO votazione,Principal principal) {
 		Sondaggio sondaggio = sr.findById(votazione.getSondaggioId()).orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId()));
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
@@ -113,12 +115,13 @@ public class SondaggioService {
     	vr.save(v);
     	utente.aggiungiPartecipazione(sondaggio);
 	}
-
+	
+	@Transactional(readOnly=true)
 	public boolean controllaPartecipazione(Long id, Principal principal) {
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
 		return ur.existsByIdAndPartecipazioniId(utente.getId(),id);
 	}
-
+	@Transactional(readOnly=true)
 	public List<StatisticheDTO> getStatistiche(Long id) {
 		List<StatisticheDTO> statistiche = sr.getStatistiche(id);
 		for(StatisticheDTO statistica : statistiche) {
@@ -126,8 +129,41 @@ public class SondaggioService {
 		}
 		return statistiche;
 	}
-
+	@Transactional(readOnly=true)
 	public List<Commento> getCommenti(Long id) {
 		return  cr.findBySondaggioId(id);
 	}
+	@Transactional(isolation = Isolation.READ_COMMITTED)
+	public void salvaCommento(Long idSondaggio, String testoCommento, Principal principal) {
+		logger.debug("inizio salvataggio del commento: {}", testoCommento);
+		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		Sondaggio sondaggio= sr.findById(idSondaggio).orElseThrow(() -> new SondaggioNonTrovatoException(idSondaggio));
+		Commento commento = new Commento(sondaggio,utente,LocalDate.now(),testoCommento);
+		cr.save(commento);
+	}
+	@Transactional(readOnly=true)
+	public List<SondaggioDTO> searchSondaggio(String str) {
+		List<SondaggioDTO> lista =sr.search(str, PageRequest.of(0, 5));
+		for(SondaggioDTO sondaggio : lista) {
+			logger.info("sondaggio"+sondaggio.getId().toString());
+			}
+		return lista;
+	}
+	@Transactional(readOnly=true)
+	public SondaggioDTO searchSondaggiopriv(String str) {
+		SondaggioDTO sondaggio = sr.findByCodiceAccesso(str);
+		return sondaggio;
+	}
+	@Transactional(readOnly=true)
+	public List<SondaggioDTO>  getSondaggiPerUtente(Principal principal) {
+		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		return sr.findByUtente(utente);
+	}
+	public List<SondaggioDTO> getSondaggiVotatiUtente(Principal principal) {
+		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		logger.info(utente.getId().toString());
+		return sr.findSondaggiVotatiPerUtente(utente.getId());
+	}
+	
+
 }

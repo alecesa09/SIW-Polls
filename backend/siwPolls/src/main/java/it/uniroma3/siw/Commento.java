@@ -24,7 +24,6 @@ public class Commento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
 	@NotBlank
 	private String testo;
 	
@@ -45,6 +44,13 @@ public class Commento {
 	public Commento(Long id) {
 		super();
 		this.id = id;
+	}
+
+	public Commento(Sondaggio sondaggio, Utente utente, LocalDate now, String testoCommento) {
+		this.data=now;
+		this.sondaggio=sondaggio;
+		this.utente=utente;
+		this.testo=testoCommento;
 	}
 
 	public Long getId() {

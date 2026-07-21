@@ -9,6 +9,8 @@ import { AuthService } from './service/AuthService';
 import NotFound from './pages/NotFound.tsx';
 import ServerError from './pages/ServerError.tsx';
 import SondaggioForm from './pages/SondaggioForm.tsx';
+import CommentoForm from './pages/CommentoForm.tsx';
+import HomeUtente from './pages/HomeUtente.tsx';
 function App() {
 
   const [utente, setUtente] = useState<Utente | null>(null);
@@ -46,11 +48,13 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sondaggio/:id" element={<Sondaggio />} />
           <Route path="/sondaggio/:id/vota" element={<SondaggioForm />} />
+          <Route path="/sondaggio/:sondaggioId/commentoForm" element={<CommentoForm />} />
+          <Route path="/utenteHome" element={<HomeUtente />} />
+
+
+
+
           <Route path="/500" element={<ServerError />} />
-
-
-
-          
           {/* Rotta 404 Catch-All: DEVE essere l'ultima Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
