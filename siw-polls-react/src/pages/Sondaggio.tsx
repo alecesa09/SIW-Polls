@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../components/config';
 import { useAuth } from '../components/AuthContext';
-import { getSondaggio, controllaPartecipazione, getCommenti, getStatistiche } from "../service/SondaggioService";
+import { getSondaggio, getCommentiSondaggio, getStatistiche } from "../service/SondaggioService";
+import { controllaPartecipazione, eliminaVotazione } from "../service/VotazioneService";
 import type { Sondaggio, Commento, Statistica } from '../types';
 import styles from './Sondaggio.module.css';
 
-export default function sondaggio() {
+export default function Sondaggio() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { utente } = useAuth();
@@ -32,7 +33,7 @@ export default function sondaggio() {
                 if (utente) {
                     const [giaVotato, commentiData] = await Promise.all([
                         controllaPartecipazione(id),
-                        getCommenti(id)
+                        getCommentiSondaggio(id)
                     ]);
                     setScaduto(
                         sondaggioData?.dataScadenza 
@@ -90,6 +91,22 @@ export default function sondaggio() {
     };
 
     const mostraStatistiche = utente && haGiaVotato && statistiche.length > 0;
+
+    const eliminaVoto = async () => {
+        try 
+        {if (!id) {
+                setError("ID del sondaggio mancante.");
+                setLoading(false);
+                return;
+            }
+            await eliminaVotazione(id);
+            alert("Voto eliminato con successo!");
+            navigate(`/`);
+        } catch (error) {
+            console.error("Errore durante l'eliminazione del voto:", error);
+            alert("Si è verificato un errore durante l'eliminazione del voto. Riprova.");
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -153,8 +170,23 @@ export default function sondaggio() {
 
             <div className={styles.actionBox}>
                 {utente ? (
-                    haGiaVotato ? (
-                        <p className={styles.actionText}>Hai già votato questo sondaggio. Grazie per la partecipazione!</p>
+                    haGiaVotato && !scaduto ? (
+                        <div>
+                            <p className={styles.actionText}>Hai già votato questo sondaggio. Puoi modificarlo o eliminarlo se desideri.</p>
+                            <Link
+                                to={`/sondaggio/${id}/vota`}
+                                state={{ sondaggioGiaCaricato: sondaggio }}
+                                className={styles.btnPrimary}>
+                                Modifica Voto
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={eliminaVoto}
+                                className={styles.btnDelete}
+                            >
+                                Elimina Voto
+                            </button>
+                        </div>
                     ) : (
                         scaduto ? (
                              <p className={styles.actionText}>Il sondaggio è scaduto</p>
@@ -174,7 +206,7 @@ export default function sondaggio() {
                     <div>
                         <p className={styles.actionText}>Devi essere registrato per poter votare e leggere i commenti.</p>
                         <a href={`${BACKEND_URL}/login?returnUrl=${window.location.pathname}`} className={styles.btnSecondary}>
-                            Accedi per Votare
+                            Accedi per Votare, modificare o eliminare il tuo voto
                         </a>
                     </div>
                 )}

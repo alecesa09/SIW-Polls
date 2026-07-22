@@ -3,18 +3,22 @@ package it.uniroma3.siw.controller.rest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.uniroma3.siw.Credential;
 import it.uniroma3.siw.Utente;
 import it.uniroma3.siw.service.CredentialService;
+import it.uniroma3.siw.service.UtenteService;
+
+import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
 @RestController
 public class AuthController {
 	private final CredentialService cs;
 	
-	public AuthController(CredentialService cs) {
+	public AuthController(CredentialService cs,UtenteService us) {
 		this.cs = cs;
 	}
 
@@ -36,4 +40,5 @@ public class AuthController {
 
 	    return ResponseEntity.ok(utenteDettagli);
 	}
+	
 }

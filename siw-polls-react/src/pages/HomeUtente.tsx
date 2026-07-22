@@ -3,11 +3,8 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../components/AuthContext";
 import { BACKEND_URL } from "../components/config";
-import {
-  ricercaSondaggiUtente,
-  ricercaSondaggiVotatiUtente,
-} from "../service/SondaggioService";
-
+import {ricercaSondaggiUtente} from "../service/SondaggioService";
+import { ricercaSondaggiVotatiUtente } from "../service/VotazioneService";
 import type { SondaggioDTO } from "../types";
 import styles from "./HomeUtente.module.css";
 

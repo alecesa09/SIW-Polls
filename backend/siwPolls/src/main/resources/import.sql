@@ -60,12 +60,13 @@ INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUE
 INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (2, 2, 3, 'NORMALE', '2026-07-16 10:05:00');
 -- Votazione 3: Mario Rossi vota il sondaggio 3 (1 domanda)
 INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (3, 3, 1, 'NORMALE', '2026-07-12 09:15:00');
--- Votazione 4: Luigi Verdi vota il sondaggio 6 (1 domanda)
-INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (4, 6, 2, 'NORMALE', '2026-07-02 18:20:00');
+-- Votazione 4: alessio vota il sondaggio 6 (1 domanda)
+INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (4, 6, 4, 'NORMALE', '2026-07-02 18:20:00');
 
 -- 7b. Inserimento Voti (la singola risposta: votazione + domanda + opzione) [AGGIORNATO]
 -- Voti della Votazione 1 (sondaggio 1: 2 domande)
 INSERT INTO voto (id, votazione_id, domanda_id, opzione_id) VALUES (1, 1, 1, 1);  -- Spring Boot
+
 INSERT INTO voto (id, votazione_id, domanda_id, opzione_id) VALUES (2, 1, 2, 3);  -- Thymeleaf
 -- Voto della Votazione 2 (sondaggio 2: 1 domanda)
 INSERT INTO voto (id, votazione_id, domanda_id, opzione_id) VALUES (3, 2, 3, 5);  -- React

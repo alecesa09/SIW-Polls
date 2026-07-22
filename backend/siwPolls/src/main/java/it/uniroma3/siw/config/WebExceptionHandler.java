@@ -13,7 +13,8 @@ import org.springframework.http.HttpStatus;
 @ControllerAdvice(basePackages = "it.uniroma3.siw.controller.web")
 public class WebExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);
-	 @ExceptionHandler(IllegalArgumentException.class)
+	 
+	@ExceptionHandler(IllegalArgumentException.class)
 	 public String handleIllegalArgument(IllegalArgumentException ex, Model model) {
 	     model.addAttribute("errore", ex.getMessage());
 	     logger.error(ex.getMessage());

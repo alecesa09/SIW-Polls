@@ -1,20 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Domanda, Opzione, Sondaggio, Votazione, Voto } from '../types';
-import { postVoti } from '../service/SondaggioService';
+import { postVotazione, getVotazioneUtente, putVotazione } from '../service/VotazioneService';
 import styles from './Sondaggio.module.css'; // Assicurati di avere questo file
 
-function SondaggioForm() {
+function SondaggioForm({ isModifica = false }) {
     const location = useLocation();
     const navigate = useNavigate();
     const sondaggio = location.state?.sondaggioGiaCaricato as Sondaggio;
     const [visibilita, setVisibilita] = useState<string>("PUBBLICA");
     const [risposte, setRisposte] = useState<{ [key: number]: number }>({});
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isNewVote, setIsNewVote] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (sondaggio && isModifica) {
+            // Verifica se il sondaggio è già stato votato dall'utente
+            getVotazioneUtente(sondaggio.id.toString()).then(voti => {
+                if (voti.length > 0) {
+                    const existingVote = voti[0]; // Supponiamo che l'utente possa avere solo un voto per sondaggio
+                    setVisibilita(existingVote.visibilita);
+                    setRisposte(existingVote.voti.reduce((acc, voto) => ({
+                        ...acc,
+                        [voto.domandaId]: voto.opzioneId
+                    }), {}));
+                    setIsNewVote(false); // Imposta isNewVote a false se esiste già un voto
+                }
+            }).catch(error => {
+                console.error("Errore durante il caricamento del voto:", error);
+            });
+        } else {
+            setIsNewVote(true);
+        }
+    }, [sondaggio, isModifica]);
 
     if (!sondaggio) {
         return <h2 className={styles.centerMessage}>Nessun sondaggio caricato. Torna alla home.</h2>;
     }
+
     const handleChange = (domandaId: number, opzioneId: number) => {
         setRisposte(prev => ({
             ...prev,
@@ -24,7 +47,7 @@ function SondaggioForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); 
-        
+
         if (Object.keys(risposte).length < sondaggio.domande.length) {
             alert("Per favore, rispondi a tutte le domande prima di inviare.");
             return;
@@ -39,14 +62,18 @@ function SondaggioForm() {
             }))
         };
 
-        setIsSubmitting(true); // Disabilita il bottone
+        setIsSubmitting(true);
 
         try {
-            await postVoti(payload);
+            if (isNewVote) {
+                await postVotazione(payload);
+                alert("Voto registrato con successo!");
+            } else {
+                await putVotazione(payload)
+                alert("Voto aggiornato con successo!");
+            }
             
-            alert("Voto registrato con successo!");
             navigate(`/sondaggio/${sondaggio.id}/commentoForm`);
-            
         } catch (error) {
             console.error("Errore durante l'invio del voto:", error);
             alert("Si è verificato un errore durante l'invio del voto. Riprova.");
@@ -55,9 +82,9 @@ function SondaggioForm() {
         }
     };
 
-    return(
+    return (
         <div className={styles.container}>
-            <h1 className={styles.titolo}>Vota: {sondaggio.titolo}</h1>
+            <h1 className={styles.titolo}>{isNewVote ? "Vota" : "Modifica Voto"}: {sondaggio.titolo}</h1>
             
             <form onSubmit={handleSubmit} className={styles.section}>
                 {sondaggio.domande.map((domanda: Domanda) => (
@@ -103,7 +130,7 @@ function SondaggioForm() {
                         className={styles.btnPrimary} 
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Invio in corso..." : "Invia Voto"}
+                        {isSubmitting ? "Invio in corso..." : isNewVote ? "Invia Voto" : "Salva Modifiche"}
                     </button>
                 </div>
             </form>

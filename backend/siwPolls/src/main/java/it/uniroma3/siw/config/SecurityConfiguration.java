@@ -48,7 +48,7 @@ public class SecurityConfiguration {
     protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception { 
     	httpSecurity.authorizeHttpRequests(authorize -> { 
     		authorize.requestMatchers(HttpMethod.GET, "/rest/sondaggio/commenti/**","/rest/sondaggio/statistiche/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
-    		authorize.requestMatchers(HttpMethod.POST, "/rest/sondaggio/commento/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
+    		authorize.requestMatchers(HttpMethod.POST, "/rest/sondaggio/commento/** rest/sondaggio/**"). hasAnyAuthority(Credential.DEFAULT_ROLE,Credential.ADMIN_ROLE);
     		authorize.requestMatchers(HttpMethod.GET, "/admin/**"). hasAnyAuthority(Credential.ADMIN_ROLE) ; 
     		authorize.requestMatchers(HttpMethod.POST, "/admin/**"). hasAnyAuthority(Credential.ADMIN_ROLE) ; 
     		authorize.anyRequest().permitAll(); });

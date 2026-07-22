@@ -11,6 +11,8 @@ import ServerError from './pages/ServerError.tsx';
 import SondaggioForm from './pages/SondaggioForm.tsx';
 import CommentoForm from './pages/CommentoForm.tsx';
 import HomeUtente from './pages/HomeUtente.tsx';
+import CreazioneSondaggio from './pages/CreazioneSondaggio.tsx';
+
 function App() {
 
   const [utente, setUtente] = useState<Utente | null>(null);
@@ -50,7 +52,7 @@ function App() {
           <Route path="/sondaggio/:id/vota" element={<SondaggioForm />} />
           <Route path="/sondaggio/:sondaggioId/commentoForm" element={<CommentoForm />} />
           <Route path="/utenteHome" element={<HomeUtente />} />
-
+          <Route path="/creaSondaggio" element={<CreazioneSondaggio />} />
 
 
 

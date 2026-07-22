@@ -42,31 +42,9 @@ public class SondaggioController {
 	    }
 	}
 	
-	@PostMapping("/rest/sondaggio/voto") 
-    public String salvaVoti(@RequestBody VotazioneDTO votazione, Principal principal) {
-        
-        Long idSondaggio = votazione.getSondaggioId();
-        String visibilita = votazione.getVisibilita();
-       
-        
-        ss.salvaVotazione(votazione,principal);
-        
-        return "Voti registrati con successo!";
-    }
-	
-	@GetMapping("rest/sondaggio/partecipazione/{id}")
-	public boolean getControlloPartecipazioneSondaggio(@PathVariable("id") Long id,Principal principal) {
-	    return ss.controllaPartecipazione(id,principal);
-	}
-	
 	@GetMapping("rest/sondaggio/statistiche/{id}")
 	public List<StatisticheDTO> getStatisticheSondaggio(@PathVariable("id") Long id) {
 	    return ss.getStatistiche(id);
-	}
-	
-	@GetMapping("rest/sondaggio/commenti/{id}")
-	public List<Commento> getCommentiSondaggio(@PathVariable("id") Long id) {
-	    return ss.getCommenti(id);
 	}
 	
 	@GetMapping("rest/sondaggio/search/{str}")
@@ -79,24 +57,14 @@ public class SondaggioController {
 	    return ss.searchSondaggiopriv(str);
 	}
 	
-	@PostMapping("rest/sondaggio/commento/{id}")
-	public ResponseEntity<String> aggiungiCommento(
-	        @PathVariable("id") Long idSondaggio, 
-	        @RequestBody String testoCommento,
-	        Principal principal) {
-		
-	     ss.salvaCommento(idSondaggio, testoCommento, principal);
-	    
-	    return ResponseEntity.ok("Commento registrato con successo!");
-	}
-	
 	@GetMapping("rest/sondaggio/utente")
 	public List<SondaggioDTO> getSondaggiCreatiDaUtente(Principal principal) {
 	     return ss.getSondaggiPerUtente(principal);
 	}
 	
-	@GetMapping("rest/sondaggi/votati/utente")
-	public List<SondaggioDTO> getSondaggiVotatiDaUtente(Principal principal) {
-	     return ss.getSondaggiVotatiUtente(principal);
+	@PostMapping("rest/sondaggio")
+	public void creaSondaggio(@RequestBody Sondaggio sondaggio, Principal principal) {
+		 ss.creaSondaggio(sondaggio,principal);
+
 	}
 }

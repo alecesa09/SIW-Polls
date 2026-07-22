@@ -37,4 +37,5 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 	@Query("SELECT new it.uniroma3.siw.dto.SondaggioDTO(v.sondaggio.id, v.sondaggio.titolo, v.sondaggio.immagine, v.sondaggio.dataScadenzaVoto) FROM Votazione v WHERE v.utente.id = :id AND v.sondaggio.dataScadenzaVoto > CURRENT_DATE")
 	List<SondaggioDTO> findSondaggiVotatiPerUtente(@Param("id") Long id);
 	
+	
 }

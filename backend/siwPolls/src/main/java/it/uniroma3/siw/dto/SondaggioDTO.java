@@ -17,7 +17,8 @@ public class SondaggioDTO {
 	    this.immagine = immagine;
 	    this.dataScadenzaVoto = dataScadenzaVoto;
 	}
-
+	
+	
 	public Long getId() {
 		return id;
 	}

@@ -86,6 +86,8 @@ public class Votazione {
 		this.visibilita=visibilita;
 	}
 
+	public Votazione() {
+	}
 	public registrazione getVisibilita() {
 		return visibilita;
 	}

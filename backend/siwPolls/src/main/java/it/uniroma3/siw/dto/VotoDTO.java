@@ -9,4 +9,11 @@ public class VotoDTO {
     
     public Long getOpzioneId() { return opzioneId; }
     public void setOpzioneId(Long opzioneId) { this.opzioneId = opzioneId; }
+    
+	public VotoDTO(Long domandaId, Long opzioneId) {
+		this.domandaId = domandaId;
+		this.opzioneId = opzioneId;
+	}
+	public VotoDTO() {
+	}
 }

@@ -64,3 +64,13 @@ export interface Statistica {
 export interface testo{
   contenuto: string;
 }
+
+export interface OpzioneForm { testo: string }
+export interface DomandaForm { testo: string; opzioni: OpzioneForm[] }
+export interface SondaggioForm {
+  titolo: string;
+  descrizione: string;
+  dataScadenzaVoto: string;
+  visibilita: 'PUBBLICO' | 'PRIVATO' ;
+  domande: DomandaForm[];
+}

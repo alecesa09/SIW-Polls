@@ -1,8 +1,7 @@
 package it.uniroma3.siw;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
 
+import java.util.Objects;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +32,9 @@ public class Voto {
 		this.votazione=v;
 		v.getVoti().add(this);
 	}
-
+	public Voto() {
+		
+	}
 	public Long getId() {
 		return id;
 	}

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BACKEND_URL } from '../components/config'; 
-const api = axios.create({
+const apiRest = axios.create({
   baseURL: BACKEND_URL + '/rest/',
   withCredentials: true,
   withXSRFToken: true,  
@@ -8,7 +8,7 @@ const api = axios.create({
   xsrfHeaderName: 'X-XSRF-TOKEN'
 });
 
-export const apiLogout = axios.create({
+export const api = axios.create({
   baseURL: BACKEND_URL,
   withCredentials: true,
   withXSRFToken: true,  
@@ -16,4 +16,4 @@ export const apiLogout = axios.create({
   xsrfHeaderName: 'X-XSRF-TOKEN'
 });
 
-export default api;
+export default apiRest;
