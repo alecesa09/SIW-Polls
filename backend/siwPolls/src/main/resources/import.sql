@@ -6,9 +6,9 @@ INSERT INTO utente (id, nome, cognome, email) VALUES (4, 'alessio', 'cesaroni', 
 
 -- 2. Inserimento Credenziali (OneToOne con Utente) [verificato]
 -- [Speculazione] Si assume che il backend utilizzi BCrypt per l'hashing. La stringa sottostante corrisponde alla password in chiaro: 'password'
-INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (1, 'admin', '$2a$12$cFQDGMZXEPVMNfrmLUG92.zyQyWSD.4XmqoM9d66z8GwwUguhB5ku', 'ADMIN', 1);
-INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (2, 'user', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 2);
-INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (3, 'giulia', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'DEFAULT', 3);
+INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (1, 'admin', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'ADMIN', 1);
+INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (2, 'user', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'DEFAULT', 2);
+INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (3, 'giulia', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'DEFAULT', 3);
 INSERT INTO credential (id, username, psw, ruolo, utente_id) VALUES (4, 'cesa', '$2a$12$/MlAeF6XHN.QL/.FVlWx2OmwJMc.nqOHoZ6cHr5SMhAfPeHaQjq82', 'ADMIN', 4);
 
 -- 3. Inserimento Sondaggi (ManyToOne con Utente) [verificato]
@@ -61,7 +61,7 @@ INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUE
 -- Votazione 3: Mario Rossi vota il sondaggio 3 (1 domanda)
 INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (3, 3, 1, 'NORMALE', '2026-07-12 09:15:00');
 -- Votazione 4: alessio vota il sondaggio 6 (1 domanda)
-INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (4, 6, 4, 'NORMALE', '2026-07-02 18:20:00');
+INSERT INTO votazione (id, sondaggio_id, utente_id, visibilita, data_voto) VALUES (4, 6, 2, 'NORMALE', '2026-07-02 18:20:00');
 
 -- 7b. Inserimento Voti (la singola risposta: votazione + domanda + opzione) [AGGIORNATO]
 -- Voti della Votazione 1 (sondaggio 1: 2 domande)

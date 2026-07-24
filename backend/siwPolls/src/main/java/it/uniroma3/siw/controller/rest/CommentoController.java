@@ -22,20 +22,20 @@ public class CommentoController {
 		this.cs = cs;
 	}
 
-	@PostMapping("rest/sondaggio/commento/{id}")
+	@PostMapping("rest/sondaggio/commento/{cod}")
 	public ResponseEntity<String> aggiungiCommento(
-	        @PathVariable("id") Long idSondaggio, 
+	        @PathVariable("cod") String codiceAccesso, 
 	        @RequestBody String testoCommento,
 	        Principal principal) {
 		
-	     cs.salvaCommento(idSondaggio, testoCommento, principal);
+	     cs.salvaCommento(codiceAccesso, testoCommento, principal);
 	    
 	    return ResponseEntity.ok("Commento registrato con successo!");
 	}
 	
-	@GetMapping("rest/sondaggio/commenti/{id}")
-	public List<Commento> getCommentiSondaggio(@PathVariable("id") Long id) {
-	    return cs.getCommenti(id);
+	@GetMapping("rest/sondaggio/commenti/{cod}")
+	public List<Commento> getCommentiSondaggio(@PathVariable("cod") String codiceAccesso) {
+	    return cs.getCommenti(codiceAccesso);
 	}
 
 }

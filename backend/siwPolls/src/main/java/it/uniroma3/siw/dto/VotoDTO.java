@@ -1,7 +1,11 @@
 package it.uniroma3.siw.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class VotoDTO {
+	@NotNull
     private Long domandaId;
+	@NotNull
     private Long opzioneId;
 
     public Long getDomandaId() { return domandaId; }

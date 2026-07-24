@@ -12,7 +12,7 @@ import SondaggioForm from './pages/SondaggioForm.tsx';
 import CommentoForm from './pages/CommentoForm.tsx';
 import HomeUtente from './pages/HomeUtente.tsx';
 import CreazioneSondaggio from './pages/CreazioneSondaggio.tsx';
-
+import Footer from "./components/footer/Footer.tsx";
 function App() {
 
   const [utente, setUtente] = useState<Utente | null>(null);
@@ -48,11 +48,11 @@ function App() {
         <Navbar/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/sondaggio/:id" element={<Sondaggio />} />
-          <Route path="/sondaggio/:id/vota" element={<SondaggioForm />} />
-          <Route path="/sondaggio/:sondaggioId/commentoForm" element={<CommentoForm />} />
+          <Route path="/sondaggio/:cod" element={<Sondaggio />} />
+          <Route path="/sondaggio/:cod/vota" element={<SondaggioForm />} />
+          <Route path="/sondaggio/:cod/commentoForm" element={<CommentoForm />} />
           <Route path="/utenteHome" element={<HomeUtente />} />
-          <Route path="/creaSondaggio" element={<CreazioneSondaggio />} />
+          <Route path="/sondaggio/crea" element={<CreazioneSondaggio />} />
 
 
 
@@ -60,6 +60,7 @@ function App() {
           {/* Rotta 404 Catch-All: DEVE essere l'ultima Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </AuthContext.Provider>
   );

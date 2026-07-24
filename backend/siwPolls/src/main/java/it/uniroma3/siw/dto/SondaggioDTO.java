@@ -10,12 +10,15 @@ public class SondaggioDTO {
 	private String immagine;
 	
 	private LocalDate dataScadenzaVoto;
+	
+	private String codiceAccesso;
 
-	public SondaggioDTO(Long id, String titolo, String immagine, LocalDate dataScadenzaVoto) {
+	public SondaggioDTO(Long id, String titolo, String immagine, LocalDate dataScadenzaVoto, String codiceAccesso) {
 	    this.id = id;
 	    this.titolo = titolo;
 	    this.immagine = immagine;
 	    this.dataScadenzaVoto = dataScadenzaVoto;
+	    this.codiceAccesso=codiceAccesso;
 	}
 	
 	
@@ -49,6 +52,26 @@ public class SondaggioDTO {
 
 	public void setScadenzaVoto(LocalDate scadenzaVoto) {
 		this.dataScadenzaVoto = scadenzaVoto;
+	}
+
+
+	public LocalDate getDataScadenzaVoto() {
+		return dataScadenzaVoto;
+	}
+
+
+	public void setDataScadenzaVoto(LocalDate dataScadenzaVoto) {
+		this.dataScadenzaVoto = dataScadenzaVoto;
+	}
+
+
+	public String getCodiceAccesso() {
+		return codiceAccesso;
+	}
+
+
+	public void setCodiceAccesso(String codiceAccesso) {
+		this.codiceAccesso = codiceAccesso;
 	}
 	
 	

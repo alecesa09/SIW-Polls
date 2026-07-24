@@ -18,6 +18,25 @@
   box-shadow: var(--shadow-md);
 }
 
+.btnCreaSondaggio {
+  display: inline-block;
+  margin-top: var(--spacing-md);
+  background-color: var(--primary-color);
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btnCreaSondaggio:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.03);
+}
+
 .heroSection h1 {
   color: var(--primary-color);
   font-size: 2.5rem;

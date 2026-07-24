@@ -147,11 +147,16 @@
     font-size: 1.1rem;
 }
 
+.buttonBox {
+    display: flex;
+    justify-content:space-evenly;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
 .btnPrimary {
-    display: inline-block;
     background-color: #28a745; 
     color: white;
-    padding: 10px 20px;
     text-decoration: none;
     border-radius: var(--border-radius);
     font-weight: bold;
@@ -160,6 +165,34 @@
 
 .btnPrimary:hover {
     background-color: #218838;
+}
+
+.btnDelete {
+    background-color: #a72828; 
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.btnDelete:hover {
+    background-color: #884021;
+}
+
+.btnPrimary,
+.btnDelete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 44px;             
+    padding: 0 20px;            
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
 }
 
 .btnSecondary {

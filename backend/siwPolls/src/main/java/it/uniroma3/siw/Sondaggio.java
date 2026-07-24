@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -19,8 +20,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 
@@ -35,10 +38,12 @@ public class Sondaggio {
 
     @NotBlank
     private String descrizione;
-
+    	
     private String immagine;
-
+    
+    
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataScadenzaVoto;
     
     @JsonIgnore
@@ -51,16 +56,16 @@ public class Sondaggio {
     
     public enum Visibilita { PUBBLICO, PRIVATO }
     
-    @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Visibilita visibilita;
     
-    @JsonIgnore
     @Column(unique = true)
     private String codiceAccesso;
     
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Domanda> domande;
+    @NotEmpty(message = "Deve esserci almeno una domanda")
+    private List<@Valid Domanda> domande;
     
    
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)

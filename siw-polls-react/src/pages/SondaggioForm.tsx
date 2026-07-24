@@ -1,41 +1,55 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { Domanda, Opzione, Sondaggio, Votazione, Voto } from '../types';
+import type { Domanda, Opzione, Sondaggio, Votazione } from '../types';
 import { postVotazione, getVotazioneUtente, putVotazione } from '../service/VotazioneService';
 import styles from './Sondaggio.module.css'; // Assicurati di avere questo file
+import { BACKEND_URL } from '../components/config';
+import { useAuth } from '../components/AuthContext';
 
-function SondaggioForm({ isModifica = false }) {
+function SondaggioForm() {
     const location = useLocation();
+    const { utente } = useAuth();
     const navigate = useNavigate();
     const sondaggio = location.state?.sondaggioGiaCaricato as Sondaggio;
-    const [visibilita, setVisibilita] = useState<string>("PUBBLICA");
+    const [visibilita, setVisibilita] = useState<string>("NORMALE");
     const [risposte, setRisposte] = useState<{ [key: number]: number }>({});
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [isNewVote, setIsNewVote] = useState<boolean>(true);
+    const [caricamentoVoto, setCaricamentoVoto] = useState<boolean>(true); // nuovo: evita submit prima di sapere se è nuovo o modifica
 
     useEffect(() => {
-        if (sondaggio && isModifica) {
-            // Verifica se il sondaggio è già stato votato dall'utente
-            getVotazioneUtente(sondaggio.id.toString()).then(voti => {
-                if (voti.length > 0) {
-                    const existingVote = voti[0]; // Supponiamo che l'utente possa avere solo un voto per sondaggio
+        if (!sondaggio) return;
+        
+        if (!utente) {
+              window.location.href = `${BACKEND_URL}/login`;
+              return;
+            }
+        getVotazioneUtente(sondaggio.codiceAccesso)
+            .then(existingVote => {
+                if (existingVote) {
                     setVisibilita(existingVote.visibilita);
                     setRisposte(existingVote.voti.reduce((acc, voto) => ({
                         ...acc,
                         [voto.domandaId]: voto.opzioneId
                     }), {}));
-                    setIsNewVote(false); // Imposta isNewVote a false se esiste già un voto
+                    setIsNewVote(false);
+                } else {
+                    setIsNewVote(true);
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error("Errore durante il caricamento del voto:", error);
-            });
-        } else {
-            setIsNewVote(true);
-        }
-    }, [sondaggio, isModifica]);
+                setIsNewVote(true);
+        })
+        .finally(() => setCaricamentoVoto(false));
+    }, [sondaggio]);
 
     if (!sondaggio) {
         return <h2 className={styles.centerMessage}>Nessun sondaggio caricato. Torna alla home.</h2>;
+    }
+
+    if (caricamentoVoto) {
+        return <h2 className={styles.centerMessage}>Caricamento in corso...</h2>;
     }
 
     const handleChange = (domandaId: number, opzioneId: number) => {
@@ -73,7 +87,7 @@ function SondaggioForm({ isModifica = false }) {
                 alert("Voto aggiornato con successo!");
             }
             
-            navigate(`/sondaggio/${sondaggio.id}/commentoForm`);
+            navigate(`/sondaggio/${sondaggio.codiceAccesso}/commentoForm`);
         } catch (error) {
             console.error("Errore durante l'invio del voto:", error);
             alert("Si è verificato un errore durante l'invio del voto. Riprova.");

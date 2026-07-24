@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../service/api';
-import { ricercaPerCodiceAcesso } from '../service/SondaggioService';
+import { ricercaPerCodiceAccesso } from '../service/SondaggioService';
 import styles from './Home.module.css';
 import { BACKEND_URL } from '../components/config';
 import type { SondaggioDTO } from '../types';
@@ -11,6 +11,7 @@ export default function Home() {
   const [sondaggi, setSondaggi] = useState<SondaggioDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { utente } = useAuth();
   const navigate = useNavigate();
   const [codiceAccesso, setCodiceAccesso] = useState<string>('');
   const [erroreCodice, setErroreCodice] = useState<string | null>(null);
@@ -45,8 +46,8 @@ export default function Home() {
     setRicercaInCorso(true);
 
     try {
-      const sondaggio = await ricercaPerCodiceAcesso(codice);
-      navigate(`/sondaggio/${sondaggio.id}`);
+      const sondaggio = await ricercaPerCodiceAccesso(codice);
+      navigate(`/sondaggio/${sondaggio.codiceAccesso}`);
     } catch (err: any) {
       console.error("Errore nella ricerca per codice:", err);
       if (err.response && err.response.status === 404) {
@@ -74,8 +75,13 @@ export default function Home() {
         {/* Colonna principale: sondaggi recenti */}
         <div className={styles.mainColumn}>
           <section className={styles.heroSection}>
-            <h1 className="title-main">Sondaggi Recenti</h1>
-            <p>Partecipa alle ultime votazioni della community.</p>
+              <h1 className="title-main">Sondaggi Recenti</h1>
+              <p>Partecipa alle ultime votazioni della community.</p>
+              {utente && (
+                  <Link to="/sondaggio/crea" className={styles.btnCreaSondaggio}>
+                      + Crea un nuovo Sondaggio
+                  </Link>
+              )}
           </section>
 
           <div className={styles.gridContainer}>
@@ -83,7 +89,7 @@ export default function Home() {
               <p>Nessun sondaggio disponibile al momento.</p>
             ) : (
               sondaggi.map((sondaggio) => (
-                <article key={sondaggio.id} className={`card-custom ${styles.card}`}>
+                <article key={sondaggio.codiceAccesso} className={`card-custom ${styles.card}`}>
                   <div className={styles.imageContainer}>
                     {sondaggio.immagine ? (
                       <img
@@ -102,7 +108,7 @@ export default function Home() {
                       <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT')}
                     </p>
 
-                    <Link to={`/sondaggio/${sondaggio.id}`} className={styles.btnPartecipa}>
+                    <Link to={`/sondaggio/${sondaggio.codiceAccesso}`} className={styles.btnPartecipa}>
                       Partecipa
                     </Link>
                   </div>
@@ -141,9 +147,8 @@ export default function Home() {
             {erroreCodice && (
               <p className={styles.codiceAccessoErrore}>{erroreCodice}</p>
             )}
-          </div>
+          </div>        
         </aside>
-
       </div>
     </main>
   );

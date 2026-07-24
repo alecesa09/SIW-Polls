@@ -48,6 +48,10 @@ public class Utente {
 	@ManyToMany
     private List<Sondaggio> partecipazioni;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    private List<Commento> commenti;
+	
 	public Long getId() {
 		return id;
 	}

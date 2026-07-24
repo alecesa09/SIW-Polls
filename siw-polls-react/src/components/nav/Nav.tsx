@@ -4,7 +4,7 @@ import { BACKEND_URL } from '../config';
 import styles from './Nav.module.css';
 import { useAuth } from '../AuthContext';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { ricerca } from '../../service/SondaggioService';
+import { ricercaPerNome } from '../../service/SondaggioService';
 import type { SondaggioDTO } from '../../types';
 import { Logout } from "../../service/AuthService"; 
 export default function Navbar() {
@@ -28,7 +28,7 @@ export default function Navbar() {
 
     const timeoutId = setTimeout(async () => {
       try {
-        const data = await ricerca(testo);
+        const data = await ricercaPerNome(testo);
         setRisultati(data);
         setMostraRisultati(true);
       } catch (error) {
@@ -52,10 +52,10 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleRisultatoClick = (id: number) => {
+  const handleRisultatoClick = (cod: string) => {
     setMostraRisultati(false);
     setPayload('');
-    navigate(`/sondaggio/${id}`);
+    navigate(`/sondaggio/${cod}`);
   };
 
   const handleLogout = async (e: FormEvent<HTMLFormElement>) => {
@@ -93,9 +93,9 @@ export default function Navbar() {
               {risultati.length > 0 ? (
                 risultati.map((sondaggio) => (
                   <li
-                    key={sondaggio.id}
+                    key={sondaggio.codiceAccesso}
                     className={styles.searchResultItem}
-                    onClick={() => handleRisultatoClick(sondaggio.id)}
+                    onClick={() => handleRisultatoClick(sondaggio.codiceAccesso)}
                   >
                     {sondaggio.immagine && (
                       <img

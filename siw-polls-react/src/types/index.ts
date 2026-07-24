@@ -24,20 +24,21 @@ export interface Domanda {
 }
 
 export interface Sondaggio {
-  id: number;
+  id:number;
   titolo: string;
   descrizione: string;
   immagine: string;
   dataScadenza: string;
+  codiceAccesso:string;
   domande: Domanda[];
   commenti ?: Commento[];
 }
 
 export interface SondaggioDTO{
-    id: number,
     titolo: string,
     immagine: string,
     dataScadenza: string;
+    codiceAccesso:string;
 }
 
 export interface AuthContextType {
@@ -71,6 +72,6 @@ export interface SondaggioForm {
   titolo: string;
   descrizione: string;
   dataScadenzaVoto: string;
-  visibilita: 'PUBBLICO' | 'PRIVATO' ;
+  visibilita: 'PUBBLICO' | 'PRIVATO';
   domande: DomandaForm[];
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import styles from './CreazioneDomanda.module.css';
 
 interface OpzioneForm { testo: string; }
 interface DomandaForm { testo: string; opzioni: OpzioneForm[]; }
@@ -32,27 +32,58 @@ export default function CreazioneDomanda({ index, domanda, onUpdate, onRemove }:
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-      <label>Testo domanda:</label>
-      <input
-        type="text"
-        value={domanda.testo}
-        onChange={(e) => aggiornaTesto(e.target.value)}
-      />
-      <button type="button" onClick={aggiungiOpzione}>Nuova risposta</button>
-      <button type="button" onClick={onRemove}>Rimuovi domanda</button>
+    <div className={styles.domandaCard}>
+      {/* Intestazione della Domanda */}
+      <div className={styles.domandaHeader}>
+        <span className={styles.domandaTitle}>Domanda {index + 1}</span>
+        <button type="button" className={styles.btnDanger} onClick={onRemove}>
+          Rimuovi domanda
+        </button>
+      </div>
 
-      {domanda.opzioni.map((opzione, idx) => (
-        <div key={idx} style={{ margin: '5px 0' }}>
-          <label>Testo risposta:</label>
-          <input
-            type="text"
-            value={opzione.testo}
-            onChange={(e) => aggiornaOpzione(idx, e.target.value)}
-          />
-          <button type="button" onClick={() => rimuoviOpzione(idx)}>X</button>
-        </div>
-      ))}
+      {/* Input Testo Domanda */}
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Testo della domanda:</label>
+        <input
+          type="text"
+          className={styles.input}
+          placeholder="Es. Qual è il tuo linguaggio di programmazione preferito?"
+          value={domanda.testo}
+          onChange={(e) => aggiornaTesto(e.target.value)}
+        />
+      </div>
+
+      {/* Opzioni */}
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Risposte possibili:</label>
+        {domanda.opzioni.map((opzione, idx) => (
+          <div key={idx} className={styles.opzioneRow}>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder={`Opzione ${idx + 1}`}
+              value={opzione.testo}
+              onChange={(e) => aggiornaOpzione(idx, e.target.value)}
+            />
+            {/* Nascondiamo il tasto X se c'è una sola opzione (opzionale ma consigliato per UX) */}
+            {domanda.opzioni.length > 1 && (
+              <button 
+                type="button" 
+                className={styles.btnIconDanger} 
+                onClick={() => rimuoviOpzione(idx)}
+                title="Rimuovi questa risposta"
+              >
+                X
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Bottone per aggiungere nuova opzione */}
+      <button type="button" className={styles.btnSecondary} onClick={aggiungiOpzione}>
+        + Nuova risposta
+      </button>
     </div>
   );
 }

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Pools</title>
+    <style>
+		body{
+			background-color: blue;
+
+		}
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.1);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--colore-grigio-chiarissimo); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--colore-testo); 
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pannello di Gestione</h1>
+
+    <div class="dashboard">
+		<a href="/admin/squadra/list">
+        <div class="card">
+            <span>Cancella sondaggio</span>
+        </div>
+		</a>
+		<a href="/admin/cancella/utente">
+        <div class="card">
+            <span>Cancella utente</span>
+        </div>
+		</a>
+		<a href="/admin/giocatore/crea">
+        <div class="card">
+            <span>Inserimento di un giocatore</span>
+        </div>
+    </div>
+
+</body>
+</html>

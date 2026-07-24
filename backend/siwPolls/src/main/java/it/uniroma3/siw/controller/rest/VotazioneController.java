@@ -20,6 +20,7 @@ import it.uniroma3.siw.dto.SondaggioDTO;
 import it.uniroma3.siw.dto.VotazioneDTO;
 import it.uniroma3.siw.exception.VotazioneNonTrovataException;
 import it.uniroma3.siw.service.VotazioneService;
+import jakarta.validation.Valid;
 
 @RestController
 public class VotazioneController {
@@ -30,20 +31,20 @@ public class VotazioneController {
 	}
 
 	@PostMapping("/rest/sondaggio/votazione") 
-    public String salvaVotazione(@RequestBody VotazioneDTO votazione, Principal principal) {
+    public String salvaVotazione( @Valid @RequestBody VotazioneDTO votazione, Principal principal) {
 	    vs.salvaVotazione(votazione,principal);	    
 	    return "Voti registrati con successo!";
     }
 	
 	@PutMapping("/rest/sondaggio/votazione") 
-    public String modificaVotazione(@RequestBody VotazioneDTO votazione, Principal principal) {
+    public String modificaVotazione(@Valid @RequestBody VotazioneDTO votazione, Principal principal) {
 	    vs.modificaVotazione(votazione,principal);	    
 	    return "Voti registrati con successo!";
     }
 	
-	@GetMapping("rest/sondaggio/partecipazione/{id}")
-	public boolean getControlloPartecipazioneSondaggio(@PathVariable("id") Long id,Principal principal) {
-	    return vs.controllaPartecipazione(id,principal);
+	@GetMapping("rest/sondaggio/partecipazione/{cod}")
+	public boolean getControlloPartecipazioneSondaggio(@PathVariable("cod") String cod,Principal principal) {
+	    return vs.controllaPartecipazione(cod,principal);
 	}
 	
 	@GetMapping("rest/sondaggi/votati/utente")
@@ -51,19 +52,15 @@ public class VotazioneController {
 	     return vs.getSondaggiVotatiUtente(principal);
 	}
 	
-	@GetMapping("rest/sondaggio/votazione/{idSondaggio}")
-	public VotazioneDTO getVotazioneUtente(@PathVariable Long idSondaggio, Principal principal) {
-		try {
-	    VotazioneDTO votazione = vs.getVotazioneUtente(idSondaggio, principal).orElseThrow(()->new VotazioneNonTrovataException());
+	@GetMapping("rest/sondaggio/votazione/{cod}")
+	public VotazioneDTO getVotazioneUtente(@PathVariable String cod, Principal principal) {
+	    VotazioneDTO votazione = vs.getVotazioneUtente(cod, principal).orElseThrow(()->new VotazioneNonTrovataException());
 	    return votazione;
-		}catch (VotazioneNonTrovataException e) {
-	    	return null;
-	    }
 	}
 	
-	@DeleteMapping("rest/sondaggio/votazione/{idSondaggio}")
-	public BodyBuilder eliminaVotazione(@PathVariable Long idSondaggio, Principal principal) {
-		vs.eliminaVotazione(idSondaggio,principal);
+	@DeleteMapping("rest/sondaggio/votazione/{cod}")
+	public BodyBuilder eliminaVotazione(@PathVariable String cod, Principal principal) {
+		vs.eliminaVotazione(cod,principal);
 		return ResponseEntity.status(HttpStatus.OK);
 	}
 	

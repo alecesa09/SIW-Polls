@@ -1,27 +1,22 @@
 import apiRest from "./api";
 import type { Sondaggio,Statistica, Commento, SondaggioDTO, SondaggioForm} from "../types";
 
-export async function getSondaggio(id: string): Promise<Sondaggio> {
-    const { data } = await apiRest.get<Sondaggio>(`/sondaggio/${id}`);
+export async function getStatistiche(codiceAccesso: string): Promise<Statistica[]>{
+    const { data } = await apiRest.get<Statistica[]>(`/sondaggio/statistiche/${codiceAccesso}`);
     return data;
 }
 
-export async function getStatistiche(id: string): Promise<Statistica[]>{
-    const { data } = await apiRest.get<Statistica[]>(`/sondaggio/statistiche/${id}`);
+export async function getCommentiSondaggio(codiceAccesso: string): Promise<Commento[]>{
+    const { data } = await apiRest.get<Commento[]>(`/sondaggio/commenti/${codiceAccesso}`);
     return data;
 }
-
-export async function getCommentiSondaggio(id: string): Promise<Commento[]>{
-    const { data } = await apiRest.get<Commento[]>(`/sondaggio/commenti/${id}`);
-    return data;
-}
-export async function ricerca(str:string):Promise<SondaggioDTO[]>{
+export async function ricercaPerNome(str:string):Promise<SondaggioDTO[]>{
     const { data } = await apiRest.get<SondaggioDTO[]>(`/sondaggio/search/${str}`);
     return data;
 }
 
-export async function ricercaPerCodiceAcesso(str:string):Promise<SondaggioDTO>{
-    const { data } = await apiRest.get<SondaggioDTO>(`/sondaggio/searchPriv/${str}`);
+export async function ricercaPerCodiceAccesso(codiceAccesso:string):Promise<Sondaggio>{
+    const { data } = await apiRest.get<Sondaggio>(`/sondaggio/search/codiceAccesso/${codiceAccesso}`);
     return data;
 }
 
@@ -30,7 +25,19 @@ export async function ricercaSondaggiUtente():Promise<SondaggioDTO[]>{
     return data;
 }
 
-export async function creaSondaggio(sondaggio :SondaggioForm):Promise<string>{
-    const { data } = await apiRest.post<string>(`/sondaggio`,sondaggio);
-    return data;
-}
+
+export const creaSondaggio = async (sondaggio: SondaggioForm, file: File | null) => {
+  const formData = new FormData();
+  
+  const sondaggioBlob = new Blob([JSON.stringify(sondaggio)], {
+    type: "application/json"
+  });
+
+  formData.append("sondaggio", sondaggioBlob);
+
+  if (file) {
+    formData.append("file", file);
+  }
+  const response = await apiRest.post('/sondaggio', formData);
+  return response.data;
+};

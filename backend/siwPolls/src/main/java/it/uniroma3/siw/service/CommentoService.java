@@ -37,16 +37,16 @@ public class CommentoService {
 	private static final Logger logger = LoggerFactory.getLogger(CommentoService.class);
 	
 	@Transactional(isolation = Isolation.READ_COMMITTED)
-	public void salvaCommento(Long idSondaggio, String testoCommento, Principal principal) {
+	public void salvaCommento(String codiceAccesso, String testoCommento, Principal principal) {
 		logger.debug("inizio salvataggio del commento: {}", testoCommento);
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
-		Sondaggio sondaggio= sr.findById(idSondaggio).orElseThrow(() -> new SondaggioNonTrovatoException(idSondaggio));
+		Sondaggio sondaggio= sr.findSondaggioByCodiceAccesso(codiceAccesso).orElseThrow(() -> new SondaggioNonTrovatoException(codiceAccesso));
 		Commento commento = new Commento(sondaggio,utente,LocalDate.now(),testoCommento);
 		cr.save(commento);
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Commento> getCommenti(Long id) {
-		return  cr.findBySondaggioId(id);
+	public List<Commento> getCommenti(String cod) {
+		return  cr.findByCodiceAccesso(cod);
 	}
 }

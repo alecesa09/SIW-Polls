@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Utenti</title>
+</head>
+<body>
+    <!-- Form di ricerca corretto -->
+    <form th:action="@{/admin/search/utenti}" method="get" >
+        <input type="number" name="id" placeholder="cerca per id"/>
+        <input type="text" name="nome" placeholder="cerca per nome"/>
+        <input type="text" name="cognome" placeholder="cerca per cognome"/>
+        <button type="submit">cerca</button>
+        <!-- Inserisci qui l'URL della vista principale per svuotare i parametri GET -->
+        <a th:href="@{/admin/cancella/utente}">Azzera filtri</a>
+    </form>
+    
+    <!-- Ciclo degli utenti -->
+    <div th:each="utente : ${utenti}" th:object="${utente}">
+        <span>id:</span><span th:text="*{id}">id</span>
+        <span>nome:</span><span th:text="*{nome}">nome</span>
+        <span>cognome:</span><span th:text="*{cognome}">cognome</span>
+        <span>email:</span><span th:text="*{email}">email</span>
+        
+        <!-- Form per la cancellazione compatibile con @DeleteMapping -->
+        <form th:action="@{/admin/cancella/utente}" method="post" style="display:inline;">
+			<input type="hidden" name="id" th:value="*{id}">
+            <button type="submit">Cancella</button>
+        </form>
+    </div>
+
+</body>
+</html>

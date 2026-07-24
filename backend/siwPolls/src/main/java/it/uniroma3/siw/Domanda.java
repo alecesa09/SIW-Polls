@@ -16,8 +16,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Domanda {
@@ -33,7 +36,9 @@ public class Domanda {
 	private Sondaggio sondaggio;
 	
 	@OneToMany(mappedBy="domanda",cascade=CascadeType.ALL)
-	private List<Opzione> opzioni;
+	@NotNull(message = "La lista delle opzioni non può essere omessa")
+	@Size(min = 2, message = "Devono esserci almeno due opzioni")
+	private List<@Valid Opzione> opzioni;
 
 	public Long getId() {
 		return id;
@@ -62,7 +67,7 @@ public class Domanda {
 	public List<Opzione> getOpzioni() {
 		return opzioni;
 	}
-
+	
 	public void setOpzioni(List<Opzione> opzioni) {
 		this.opzioni = opzioni;
 	}

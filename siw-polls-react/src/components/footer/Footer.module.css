@@ -1,0 +1,16 @@
+.footerContainer{
+    background-color: black;
+    position: sticky;
+    bottom: 0;
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.adminImmage{
+    margin-right: 10px;
+    height: 20px;
+    width: auto;
+    border-radius: 3px;
+    transition: opacity 0.3s ease;
+}

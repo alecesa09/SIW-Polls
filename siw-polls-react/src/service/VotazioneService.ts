@@ -21,8 +21,8 @@ export async function ricercaSondaggiVotatiUtente():Promise<SondaggioDTO[]>{
     return data;
 }
 
-export async function getVotazioneUtente(idSondaggio:string):Promise<Votazione[]>{
-    const { data } = await apiRest.get<Votazione[]>(`/sondaggio/votazione/${idSondaggio}`);
+export async function getVotazioneUtente(idSondaggio:string):Promise<Votazione| null>{
+    const { data } = await apiRest.get<Votazione | null>(`/sondaggio/votazione/${idSondaggio}`);
     return data;
 }
 

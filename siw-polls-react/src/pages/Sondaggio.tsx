@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../components/config';
 import { useAuth } from '../components/AuthContext';
-import { getSondaggio, getCommentiSondaggio, getStatistiche } from "../service/SondaggioService";
-import { controllaPartecipazione, eliminaVotazione } from "../service/VotazioneService";
+import { ricercaPerCodiceAccesso, getCommentiSondaggio, getStatistiche } from "../service/SondaggioService";
+import { controllaPartecipazione, eliminaVotazione, getVotazioneUtente } from "../service/VotazioneService";
 import type { Sondaggio, Commento, Statistica } from '../types';
 import styles from './Sondaggio.module.css';
 
 export default function Sondaggio() {
-    const { id } = useParams<{ id: string }>();
+    const { cod } = useParams<{ cod: string }>();
     const navigate = useNavigate();
     const { utente } = useAuth();
-
+    const [votoModificabile, setVotoModificabile] = useState<boolean>(false);
     const [sondaggio, setSondaggio] = useState<Sondaggio>();
     const [commenti, setCommenti] = useState<Commento[]>([]);
     const [statistiche, setStatistiche] = useState<Statistica[]>([]);
@@ -22,32 +22,36 @@ export default function Sondaggio() {
 
     useEffect(() => {
         const fetchDati = async () => {
-            if (!id) {
-                setError("ID del sondaggio mancante.");
+            if (cod===undefined) {
+                setError("codice del sondaggio mancante.");
                 setLoading(false);
                 return;
             }
             try {
-                const sondaggioData = await getSondaggio(id);
+                const sondaggioData = await ricercaPerCodiceAccesso(cod);
                 setSondaggio(sondaggioData);
                 if (utente) {
-                    const [giaVotato, commentiData] = await Promise.all([
-                        controllaPartecipazione(id),
-                        getCommentiSondaggio(id)
-                    ]);
-                    setScaduto(
-                        sondaggioData?.dataScadenza 
-                            ? new Date(sondaggioData.dataScadenza).getTime() < Date.now() 
-                            : false
-                        );
-                    setHaGiaVotato(giaVotato);
-                    setCommenti(commentiData);
+                const [giaVotato, commentiData] = await Promise.all([
+                    controllaPartecipazione(cod),
+                    getCommentiSondaggio(cod)
+                ]);
+                setScaduto(
+                    sondaggioData?.dataScadenza 
+                        ? new Date(sondaggioData.dataScadenza).getTime() < Date.now() 
+                        : false
+                );
+                setHaGiaVotato(giaVotato);
+                setCommenti(commentiData);
 
-                    if (giaVotato) {
-                        const statisticheData = await getStatistiche(id);
-                        setStatistiche(statisticheData);
-                    }
+                if (giaVotato) {
+                    const [statisticheData, votazioneUtente] = await Promise.all([
+                        getStatistiche(cod),
+                        getVotazioneUtente(cod)
+                    ]);
+                    setStatistiche(statisticheData);
+                    setVotoModificabile(Boolean(votazioneUtente));
                 }
+}
             } catch (err: any) {
                 console.error("Errore nel recupero del sondaggio:", err);
                 if (err.response && err.response.status === 404) {
@@ -62,7 +66,7 @@ export default function Sondaggio() {
             }
         };
         fetchDati();
-    }, [id, navigate, utente]);
+    }, [cod, navigate, utente]);
 
     if (loading) return <h2 className={styles.centerMessage}>Caricamento in corso...</h2>;
 
@@ -94,17 +98,17 @@ export default function Sondaggio() {
 
     const eliminaVoto = async () => {
         try 
-        {if (!id) {
+        {if (!cod) {
                 setError("ID del sondaggio mancante.");
                 setLoading(false);
                 return;
             }
-            await eliminaVotazione(id);
+            await eliminaVotazione(cod);
             alert("Voto eliminato con successo!");
             navigate(`/`);
         } catch (error) {
             console.error("Errore durante l'eliminazione del voto:", error);
-            alert("Si è verificato un errore durante l'eliminazione del voto. Riprova.");
+            alert("attenzione votazione non associata al tuo account o non hai ancora votato o hai votato in modo anonimo");
         }
     };
 
@@ -171,36 +175,40 @@ export default function Sondaggio() {
             <div className={styles.actionBox}>
                 {utente ? (
                     haGiaVotato && !scaduto ? (
-                        <div>
-                            <p className={styles.actionText}>Hai già votato questo sondaggio. Puoi modificarlo o eliminarlo se desideri.</p>
-                            <Link
-                                to={`/sondaggio/${id}/vota`}
-                                state={{ sondaggioGiaCaricato: sondaggio }}
-                                className={styles.btnPrimary}>
-                                Modifica Voto
-                            </Link>
-                            <button
-                                type="button"
-                                onClick={eliminaVoto}
-                                className={styles.btnDelete}
-                            >
-                                Elimina Voto
-                            </button>
-                        </div>
-                    ) : (
-                        scaduto ? (
-                             <p className={styles.actionText}>Il sondaggio è scaduto</p>
-                            ) : (
-                                <div>
-                                    <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
+                        votoModificabile ? (
+                            <div>
+                                <p className={styles.actionText}>Hai già votato questo sondaggio. Puoi modificarlo o eliminarlo se desideri.</p>
+                                <div className={styles.buttonBox}>
                                     <Link
-                                        to={`/sondaggio/${id}/vota`}
+                                        to={`/sondaggio/${cod}/vota`}
                                         state={{ sondaggioGiaCaricato: sondaggio }}
                                         className={styles.btnPrimary}>
-                                        Vai al form di Votazione
+                                        Modifica Voto
                                     </Link>
+                                    <button type="button" onClick={eliminaVoto} className={styles.btnDelete}>
+                                        Elimina Voto
+                                    </button>
                                 </div>
-                                )
+                            </div>
+                        ) : (
+                            <p className={styles.actionText}>
+                                Hai già partecipato a questo sondaggio in modalità anonima. Il voto anonimo non può essere modificato né eliminato.
+                            </p>
+                        )
+                    ) : (
+                        scaduto ? (
+                            <p className={styles.actionText}>Il sondaggio è scaduto</p>
+                        ) : (
+                            <div>
+                                <p className={styles.actionText}>Ciao <strong>{utente.nome}</strong>, puoi partecipare a questo sondaggio!</p>
+                                <Link
+                                    to={`/sondaggio/${cod}/vota`}
+                                    state={{ sondaggioGiaCaricato: sondaggio }}
+                                    className={styles.btnPrimary}>
+                                    Vai al form di Votazione
+                                </Link>
+                            </div>
+                        )
                     )
                 ) : (
                     <div>

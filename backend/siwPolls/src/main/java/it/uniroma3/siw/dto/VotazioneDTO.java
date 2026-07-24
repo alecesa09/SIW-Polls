@@ -4,11 +4,19 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import it.uniroma3.siw.Votazione;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class VotazioneDTO {
+	@NotNull	
     private Long sondaggioId;
+	
+	@NotNull
     private String visibilita;
-    private List<VotoDTO> voti;
+	
+	@NotNull(message = "La lista ddei voti non può essere omessa")
+    private List<@Valid VotoDTO> voti;
     
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     public VotazioneDTO(Long idSondaggio,Votazione votazione, List<VotoDTO> voti) {

@@ -114,14 +114,17 @@ export default function UtenteHome() {
               <ul className={styles.pollList}>
                 {sondaggiCreatiPagina.map((sondaggio) => (
                   <li
-                    key={sondaggio.id}
+                    key={sondaggio.codiceAccesso}
                     className={styles.pollItem}
                   >
                     <Link
-                      to={`/sondaggio/${sondaggio.id}`}
+                      to={`/sondaggio/${sondaggio.codiceAccesso}`}
                       className={styles.pollLink}
                     >
-                      {sondaggio.titolo}
+                      <p className={styles.cardTitle}>
+                          <span>{sondaggio.titolo}</span>
+                          <span className={styles.codiceBadge}>codice: {sondaggio.codiceAccesso}</span>
+                      </p>
                     </Link>
                   </li>
                 ))}
@@ -180,11 +183,11 @@ export default function UtenteHome() {
               <ul className={styles.pollList}>
                 {sondaggiVotatiPagina.map((sondaggio) => (
                   <li
-                    key={sondaggio.id}
+                    key={sondaggio.codiceAccesso}
                     className={styles.pollItem}
                   >
                     <Link
-                      to={`/sondaggio/${sondaggio.id}`}
+                      to={`/sondaggio/${sondaggio.codiceAccesso}`}
                       className={styles.pollLink}
                     >
                       Modifica la tua votazione per:{" "}

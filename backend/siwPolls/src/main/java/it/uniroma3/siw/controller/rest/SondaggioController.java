@@ -6,18 +6,24 @@ import it.uniroma3.siw.dto.StatisticheDTO;
 import it.uniroma3.siw.dto.VotazioneDTO;
 import it.uniroma3.siw.dto.VotoDTO;
 import it.uniroma3.siw.service.SondaggioService;
+import jakarta.validation.Valid;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 public class SondaggioController {
@@ -32,29 +38,19 @@ public class SondaggioController {
 		return ss.getSondaggiRecenti();
 	}
 	
-	@GetMapping("rest/sondaggio/{id}")
-	public ResponseEntity<Sondaggio> getSondaggio(@PathVariable("id") Long id) {
-	    Optional<Sondaggio> sondaggioOpt = ss.getSondaggioById(id);
-	    if (sondaggioOpt.isPresent()) {
-	        return ResponseEntity.ok(sondaggioOpt.get()); 
-	    } else {
-	        return ResponseEntity.notFound().build(); 
-	    }
+	@GetMapping("rest/sondaggio/statistiche/{cod}")
+	public List<StatisticheDTO> getStatisticheSondaggio(@PathVariable("cod") String cod) {
+	    return ss.getStatistiche(cod);
 	}
 	
-	@GetMapping("rest/sondaggio/statistiche/{id}")
-	public List<StatisticheDTO> getStatisticheSondaggio(@PathVariable("id") Long id) {
-	    return ss.getStatistiche(id);
+	@GetMapping("rest/sondaggio/search/{titolo}")
+	public List<SondaggioDTO> getSondaggioByTitolo(@PathVariable("titolo") String titolo) {
+	    return ss.searchSondaggio(titolo);
 	}
 	
-	@GetMapping("rest/sondaggio/search/{str}")
-	public List<SondaggioDTO> getSondaggioByTitolo(@PathVariable("str") String str) {
-	    return ss.searchSondaggio(str);
-	}
-	
-	@GetMapping("rest/sondaggio/searchPriv/{str}")
-	public SondaggioDTO getSondaggioByCodiceAcesso(@PathVariable("str") String str) {
-	    return ss.searchSondaggiopriv(str);
+	@GetMapping("rest/sondaggio/search/codiceAccesso/{cod}")
+	public Sondaggio getSondaggioByCodiceAccesso(@PathVariable("cod") String cod) {
+	    return ss.searchSondaggioByCodiceAcesso(cod);
 	}
 	
 	@GetMapping("rest/sondaggio/utente")
@@ -62,9 +58,12 @@ public class SondaggioController {
 	     return ss.getSondaggiPerUtente(principal);
 	}
 	
-	@PostMapping("rest/sondaggio")
-	public void creaSondaggio(@RequestBody Sondaggio sondaggio, Principal principal) {
-		 ss.creaSondaggio(sondaggio,principal);
-
-	}
+	@PostMapping(value = "/rest/sondaggio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> creaSondaggio(
+    		@Valid @RequestPart("sondaggio") Sondaggio sondaggio,
+            @RequestPart(value = "file", required = false) MultipartFile file ,Principal principal) throws IOException {
+		ss.creaSondaggio(sondaggio, file, principal);
+        return ResponseEntity.ok().build();
+    }
+	
 }

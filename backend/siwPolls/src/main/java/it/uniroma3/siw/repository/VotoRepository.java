@@ -12,8 +12,8 @@ import it.uniroma3.siw.dto.VotoDTO;
 public interface VotoRepository extends JpaRepository<Voto, Long> {
 	@Query("SELECT new it.uniroma3.siw.dto.VotoDTO(v.domanda.id, v.opzione.id) "
 		     + "FROM Voto v "
-		     + "WHERE v.votazione.utente.id = :idUtente AND v.votazione.sondaggio.id = :idSondaggio")
-		List<VotoDTO> getVotiSondaggio(@Param("idSondaggio") Long idSondaggio, @Param("idUtente") Long idUtente);
+		     + "WHERE v.votazione.utente.id = :idUtente AND v.votazione.sondaggio.codiceAccesso = :cod")
+		List<VotoDTO> getVotiSondaggio(@Param("cod") String coSondaggio, @Param("idUtente") Long idUtente);
 			
 	
 }

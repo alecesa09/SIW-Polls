@@ -1,11 +1,16 @@
 package it.uniroma3.siw.controller.web;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.Credential;
 import it.uniroma3.siw.Utente;
@@ -57,4 +62,34 @@ public class UtenteController {
     public String getmenu() {
     	return "/admin/index";
     }
+	
+	@GetMapping("/admin/cancella/utente")
+	public String getListaCancellazioneUtente(Model model) {
+		List<Utente> utenti =utenteService.findAll();
+		model.addAttribute("utenti", utenti);
+		return "/admin/utente/list";
+	}
+	
+	@GetMapping("/admin/search/utenti")
+	public String getListaFiltrataCancellazioneUtente(
+	        @RequestParam(required = false) String nome,
+	        @RequestParam(required = false) String cognome,
+	        @RequestParam(required = false) Long id, 
+	        Model model) {
+
+
+	    List<Utente> utenti = utenteService.findByParametri(nome, cognome, id);
+	    model.addAttribute("utenti", utenti);
+	    
+	    return "/admin/utente/list";
+	}
+
+	@PostMapping("/admin/cancella/utente")
+	public String cancellaUtente(@RequestParam("id") Long idUtente) {
+	    System.out.println("Cancellazione utente ID: " + idUtente);
+	    
+	    utenteService.cancellaUtente(idUtente);
+	    return "redirect:/admin/cancella/utente";
+	}
+	
 }
