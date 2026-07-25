@@ -88,18 +88,25 @@ public class SecurityConfiguration {
     		logout.permitAll();
     		});
     	
+    	
+    	CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+    	csrfTokenRepository.setCookieCustomizer(cookieBuilder -> cookieBuilder
+    	    .sameSite("None")
+    	    .secure(true)
+    	);
+    	
     	httpSecurity
         .csrf(csrf -> csrf
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .csrfTokenRepository(csrfTokenRepository)
             .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
         )
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
-    	httpSecurity.cors(Customizer.withDefaults());
-    	
-        return httpSecurity.build();
-        
-        
+    httpSecurity.cors(Customizer.withDefaults());
+
+    return httpSecurity.build();
+	        
+        		
     }
     
     
