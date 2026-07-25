@@ -13,13 +13,13 @@ public class MvcConfig implements WebMvcConfigurer {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
-    @Override
+    @Override//per il momento non lo uso
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         
-        Path cartellaUpload = Paths.get(uploadDir);
-        String percorsoAssoluto = cartellaUpload.toFile().getAbsolutePath();
+        //Path cartellaUpload = Paths.get(uploadDir);
+        //String percorsoAssoluto = cartellaUpload.toFile().getAbsolutePath();
 
-        registry.addResourceHandler("/immagini/**")
-                .addResourceLocations("file:" + percorsoAssoluto + "/");
+        //registry.addResourceHandler("/immagini/**")
+                //.addResourceLocations("file:" + percorsoAssoluto + "/");
     }
 }
