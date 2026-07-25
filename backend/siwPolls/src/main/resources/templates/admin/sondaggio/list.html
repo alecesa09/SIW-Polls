@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Lista sondaggi</title>
+	    <link rel="stylesheet" th:href="@{/css/global.css}" href="global.css">
+	</head>
+	<body>
+		<h1 class="title-main">Lista sondaggi</h1>
+
+		<form th:action="@{/admin/lista/sondaggi/filtro}" method="get">
+
+			<label>titolo:</label>
+			<input type="text" name="titolo"/>
+
+			<label>codice accesso:</label>
+			<input type="text" name="codiceAccesso"/>
+
+			<label>dataCreazioneMin:</label>
+			<input type="date" name="dataCreazioneMin">
+
+			<label>dataCreazioneMax:</label>
+			<input type="date" name="dataCreazioneMax">
+
+			<input type="submit" value="Cerca">
+			<a th:href="@{/admin/lista/sondaggi}">ripristina filtri</a>
+		</form>
+
+		<div class="card-custom" th:each="sondaggio : ${sondaggi}" th:object="${sondaggio}">
+	        <span>titolo:</span><span th:text="*{titolo}">titolo</span>
+	        <span>codiceAccesso:</span><span th:text="*{codiceAccesso}">codiceAccesso</span>
+	        <span>dataCreazione:</span><span th:text="*{dataCreazione}">dataCreazione</span>
+
+	        <form th:action="@{/admin/cancella/sondaggio}" method="post">
+				<input type="hidden" name="id" th:value="*{id}">
+	            <button type="submit">Cancella</button>
+	        </form>
+	    </div>
+	</body>
+</html>

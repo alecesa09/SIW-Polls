@@ -140,5 +140,24 @@ public class SondaggioService {
 	    // Restituisco il nuovo nome (es. "123e4567-e89b-12d3-a456-426614174000.png")
 	    return nomeFileUnivoco; 
 	}
+	@Transactional(readOnly=true)
+	public List<Sondaggio> findAll() {
+		return sr.findAll();
+	}
+	public List<Sondaggio> findByFiltri(String titolo, String codiceAccesso,
+            LocalDate dataCreazioneMin, LocalDate dataCreazioneMax) {
 
+		String titoloParam = (titolo != null && !titolo.isBlank())
+		? "%" + titolo.trim().toLowerCase() + "%" : null;
+		
+		String codiceAccessoParam = (codiceAccesso != null && !codiceAccesso.isBlank())
+		? "%" + codiceAccesso.trim().toLowerCase() + "%" : null;
+		
+		return sr.findByfiltri(titoloParam, codiceAccessoParam, dataCreazioneMin, dataCreazioneMax);
+		}
+	
+	public void cancellaSondaggio(Long id) {
+		Sondaggio sondaggio = sr.findById(id).orElseThrow(()-> new SondaggioNonTrovatoException(id.toString()));
+		sr.delete(sondaggio);
+	}
 }

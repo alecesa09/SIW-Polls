@@ -1,0 +1,242 @@
+/* ==========================================================================
+   global.css — stile condiviso per il pannello admin
+   Basato sui token colore definiti in index.css
+   ========================================================================== */
+
+:root {
+  /* Colori base */
+  --primary-color: #4da3ff;
+  --primary-hover: #1976d2;
+  --secondary-color: #e5437a;
+
+  /* Sfondi blu scuri */
+  --bg-color: #02264a;
+  --surface-color: #06396b;
+
+  /* Testi */
+  --text-main: #f0f4f8;
+  --text-muted: #a0b2c6;
+
+  /* Stato */
+  --danger-color: #e5437a;
+  --danger-hover: #c22f61;
+  --border-color: rgba(255, 255, 255, 0.15);
+
+  /* Spaziature */
+  --border-radius: 8px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
+  /* Ombre */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: var(--spacing-lg);
+}
+
+h1 {
+  color: var(--text-main);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* -------------------------------------------------------------------- */
+/* Form di ricerca / filtro                                             */
+/* -------------------------------------------------------------------- */
+
+form {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+form label {
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 6px 10px;
+  font-family: inherit;
+}
+
+input[type="text"]::placeholder,
+input[type="number"]::placeholder {
+  color: var(--text-muted);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 1px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Bottoni e link                                                       */
+/* -------------------------------------------------------------------- */
+
+button,
+input[type="submit"] {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: var(--primary-hover);
+  color: var(--text-main);
+}
+
+/* bottoni "Cancella" dentro le liste */
+.card-custom button[type="submit"] {
+  background-color: var(--danger-color);
+  color: var(--text-main);
+}
+
+.card-custom button[type="submit"]:hover {
+  background-color: var(--danger-hover);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------- */
+/* Card / righe lista                                                   */
+/* -------------------------------------------------------------------- */
+
+.card-custom {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.card-custom:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-custom span:nth-child(odd) {
+  color: var(--text-muted);
+  font-size: 0.85em;
+}
+
+.card-custom span:nth-child(even) {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* Spinge il form di cancellazione a destra della card */
+.card-custom form {
+  margin-left: auto;
+  margin-bottom: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.title-main {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+}
+
+/* -------------------------------------------------------------------- */
+/* Errori                                                                */
+/* -------------------------------------------------------------------- */
+
+ul.errors,
+ul[style*="color: red"] {
+  background-color: var(--surface-color);
+  border: 1px solid var(--danger-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  list-style: none;
+  color: var(--danger-color) !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* Dashboard (index.html)                                               */
+/* -------------------------------------------------------------------- */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.dashboard .card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard .card:hover {
+  transform: translateY(-5px);
+  background-color: var(--bg-color);
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+}

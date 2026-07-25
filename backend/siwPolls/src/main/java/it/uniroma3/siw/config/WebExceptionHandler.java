@@ -18,14 +18,14 @@ public class WebExceptionHandler {
 	 public String handleIllegalArgument(IllegalArgumentException ex, Model model) {
 	     model.addAttribute("errore", ex.getMessage());
 	     logger.error(ex.getMessage());
-	     return "errore/500";
+	     return "error/500";
 	 }
 	 
 	@ExceptionHandler(Exception.class)
 	 public String handleException(Exception ex, Model model) {
 	     model.addAttribute("errore", ex.getMessage());
 	     logger.error(ex.getMessage());
-	     return "errore/500";
+	     return "error/500";
 	 }
 		
 	

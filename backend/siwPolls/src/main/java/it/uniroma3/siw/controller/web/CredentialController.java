@@ -37,8 +37,4 @@ public class CredentialController {
         return "redirect:" + frontendUrl; 
     }
     
-    @GetMapping("/error")
-    public String error() {
-    	return "/error";
-    }
 }

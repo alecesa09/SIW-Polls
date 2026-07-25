@@ -47,4 +47,16 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 	@Modifying
 	@Query("UPDATE Sondaggio s SET s.utente = null WHERE s.utente.id = :idUtente")
 	void setUtenteNullByUtenteId(@Param("idUtente") Long idUtente);
+	
+	@Query("SELECT s " +
+		       "FROM Sondaggio s " +
+		       "WHERE (:titolo IS NULL OR LOWER(s.titolo) LIKE :titolo) " +
+		       "AND (:codiceAccesso IS NULL OR LOWER(s.codiceAccesso) LIKE :codiceAccesso) " +
+		       "AND s.dataCreazione >= COALESCE(:dataCreazioneMin, s.dataCreazione) " +
+		       "AND s.dataCreazione <= COALESCE(:dataCreazioneMax, s.dataCreazione)")
+		List<Sondaggio> findByfiltri(
+		        @Param("titolo") String titolo,
+		        @Param("codiceAccesso") String codiceAccesso,
+		        @Param("dataCreazioneMin") LocalDate dataCreazioneMin,
+		        @Param("dataCreazioneMax") LocalDate dataCreazioneMax);
 }
