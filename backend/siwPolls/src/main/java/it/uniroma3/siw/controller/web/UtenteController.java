@@ -35,7 +35,7 @@ public class UtenteController {
 	public String iniziaRegistrazione(Model model) {
 		model.addAttribute("utente", new Utente());
         model.addAttribute("credentials", new Credential());
-		return "/utente/registrazione";
+		return "utente/registrazione";
 	}
 	
 	@PostMapping("/register")
@@ -45,22 +45,21 @@ public class UtenteController {
 	        @Valid @ModelAttribute("credentials") Credential credentials, 
 	        BindingResult credentialsBindingResult,
 	        Model model) {
-		if(credentialsBindingResult.hasErrors() || utenteBindingResult.hasErrors()) {
-			return "/utente/registrazione";
-		}
-		 try {
-			 credentialService.saveCredentials(credentials,utente);
-			 return "redirect:/login";
-		 }
-		 catch (EmailUtenteDuplicataException | UsernameDuplicatoException e) {
-			 utenteBindingResult.reject("errore", e.getMessage());
-			 return "/utente/registrazione";
-		 }
-		
+	    if(credentialsBindingResult.hasErrors() || utenteBindingResult.hasErrors()) {
+	        return "utente/registrazione"; // Rimosso lo slash iniziale
+	    }
+	     try {
+	         credentialService.saveCredentials(credentials, utente);
+	         return "redirect:/login";
+	     }
+	     catch (EmailUtenteDuplicataException | UsernameDuplicatoException e) {
+	         utenteBindingResult.reject("errore", e.getMessage());
+	         return "utente/registrazione"; // Rimosso lo slash iniziale
+	     }
 	}
 	@GetMapping("/admin")
     public String getmenu() {
-    	return "/admin/index";
+    	return "admin/index";
     }
 	
 	@GetMapping("/admin/cancella/utente")
