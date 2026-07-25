@@ -1,6 +1,9 @@
 package it.uniroma3.siw.config;
 import javax.sql.DataSource;
 
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -97,5 +100,13 @@ public class SecurityConfiguration {
         return httpSecurity.build();
         
         
+    }
+    
+    
+    @Bean
+    public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> cookieSameSiteSupplier() {
+        return factory -> factory.addCookieSameSiteSuppliers(
+            CookieSameSiteSupplier.ofNone()
+        );
     }
 }
