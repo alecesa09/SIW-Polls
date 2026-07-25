@@ -9,10 +9,6 @@
 <body>
     <h1 class="title-main">Lista Utenti</h1>
 
-	<ul class="errors" th:if="${#fields.hasGlobalErrors()}">
-		    <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
-	</ul>
-
     <form th:action="@{/admin/search/utenti}" method="get" >
         <input type="number" name="id" placeholder="cerca per id"/>
         <input type="text" name="nome" placeholder="cerca per nome"/>
