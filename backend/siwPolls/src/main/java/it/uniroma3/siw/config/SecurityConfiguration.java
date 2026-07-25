@@ -97,7 +97,7 @@ public class SecurityConfiguration {
     	
     	httpSecurity
         .csrf(csrf -> csrf
-        	.ignoringRequestMatchers("/rest/**")//react non puo prendere i cookie scfr dall login quindi lo disattivo
+        	.ignoringRequestMatchers("/rest/**", "/logout")//react non puo prendere i cookie scfr dall login quindi lo disattivo
         );
 
     httpSecurity.cors(Customizer.withDefaults());

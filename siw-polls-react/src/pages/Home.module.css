@@ -68,6 +68,12 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
+  margin-right: 30px;
+}
+
+.gridSearchContainer{
+  display: flex;
+  justify-content: space-evenly;
 }
 
 /* Stili specifici della Card Moderna */

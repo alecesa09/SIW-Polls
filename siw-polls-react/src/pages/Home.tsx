@@ -83,72 +83,74 @@ export default function Home() {
               </Link>
             )}
           </section>
+          <div className={styles.gridSearchContainer}>
+            <div className={styles.gridContainer}>
+              {!Array.isArray(sondaggi) ? (
+                <p>Errore: formato dati imprevisto dal server.</p>
+              ) : sondaggi.length === 0 ? (
+                <p>Nessun sondaggio disponibile al momento.</p>
+              ) : (
+                sondaggi.map((sondaggio) => (
+                  <article key={sondaggio.codiceAccesso} className={`card-custom ${styles.card}`}>
+                    <div className={styles.imageContainer}>
+                      {sondaggio.immagine ? (
+                        <img
+                          src={`${BACKEND_URL}/immagini/${sondaggio.immagine}`}
+                          alt={sondaggio.titolo}
+                          className={styles.cardImage}
+                        />
+                      ) : (
+                        <div className={styles.placeholderImage}>Nessuna Immagine</div>
+                      )}
+                    </div>
+                    <div className={styles.cardContent}>
+                      <h2 className={styles.cardTitle}>{sondaggio.titolo}</h2>
+                      <p className={styles.cardMeta}>
+                        <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT')}
+                      </p>
 
-          <div className={styles.gridContainer}>
-            {!Array.isArray(sondaggi) ? (
-              <p>Errore: formato dati imprevisto dal server.</p>
-            ) : sondaggi.length === 0 ? (
-              <p>Nessun sondaggio disponibile al momento.</p>
-            ) : (
-              sondaggi.map((sondaggio) => (
-                <article key={sondaggio.codiceAccesso} className={`card-custom ${styles.card}`}>
-                  <div className={styles.imageContainer}>
-                    {sondaggio.immagine ? (
-                      <img
-                        src={`${BACKEND_URL}/immagini/${sondaggio.immagine}`}
-                        alt={sondaggio.titolo}
-                        className={styles.cardImage}
-                      />
-                    ) : (
-                      <div className={styles.placeholderImage}>Nessuna Immagine</div>
-                    )}
-                  </div>
-                  <div className={styles.cardContent}>
-                    <h2 className={styles.cardTitle}>{sondaggio.titolo}</h2>
-                    <p className={styles.cardMeta}>
-                      <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT')}
-                    </p>
-
-                    <Link to={`/sondaggio/${sondaggio.codiceAccesso}`} className={styles.btnPartecipa}>
-                      Partecipa
-                    </Link>
-                  </div>
-                </article>
-              ))
-            )}
-          </div>
-
-          {/* Colonna laterale destra: accesso tramite codice */}
-          <aside className={styles.sidebarColumn}>
-            <div className={`card-custom ${styles.codiceAccessoBox}`}>
-              <h2 className={styles.codiceAccessoTitle}>Hai un codice di accesso?</h2>
-              <p className={styles.codiceAccessoText}>
-                Inserisci il codice per accedere direttamente a un sondaggio privato.
-              </p>
-
-              <form onSubmit={handleSubmitCodice} className={styles.codiceAccessoForm}>
-                <input
-                  type="text"
-                  placeholder="Es. TECH2026"
-                  value={codiceAccesso}
-                  onChange={(e) => setCodiceAccesso(e.target.value)}
-                  disabled={ricercaInCorso}
-                  className={styles.codiceAccessoInput}
-                />
-                <button
-                  type="submit"
-                  className={styles.btnPartecipa}
-                  disabled={ricercaInCorso}
-                >
-                  {ricercaInCorso ? "Ricerca in corso..." : "Vai al Sondaggio"}
-                </button>
-              </form>
-
-              {erroreCodice && (
-                <p className={styles.codiceAccessoErrore}>{erroreCodice}</p>
+                      <Link to={`/sondaggio/${sondaggio.codiceAccesso}`} className={styles.btnPartecipa}>
+                        Partecipa
+                      </Link>
+                    </div>
+                  </article>
+                ))
               )}
             </div>
-          </aside>
+
+            {/* Colonna laterale destra: accesso tramite codice */}
+            <div className={styles.sidebarColumn}>
+              <div className={`card-custom ${styles.codiceAccessoBox}`}>
+                <h2 className={styles.codiceAccessoTitle}>Hai un codice di accesso?</h2>
+                <p className={styles.codiceAccessoText}>
+                  Inserisci il codice per accedere direttamente a un sondaggio privato.
+                </p>
+
+                <form onSubmit={handleSubmitCodice} className={styles.codiceAccessoForm}>
+                  <input
+                    type="text"
+                    placeholder="Es. TECH2026"
+                    value={codiceAccesso}
+                    onChange={(e) => setCodiceAccesso(e.target.value)}
+                    disabled={ricercaInCorso}
+                    className={styles.codiceAccessoInput}
+                  />
+                  <button
+                    type="submit"
+                    className={styles.btnPartecipa}
+                    disabled={ricercaInCorso}
+                  >
+                    {ricercaInCorso ? "Ricerca in corso..." : "Vai al Sondaggio"}
+                  </button>
+                </form>
+
+                {erroreCodice && (
+                  <p className={styles.codiceAccessoErrore}>{erroreCodice}</p>
+                )}
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>  
     </main>
