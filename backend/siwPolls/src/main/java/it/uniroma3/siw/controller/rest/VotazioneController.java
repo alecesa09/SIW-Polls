@@ -54,7 +54,7 @@ public class VotazioneController {
 	
 	@GetMapping("rest/sondaggio/votazione/{cod}")
 	public VotazioneDTO getVotazioneUtente(@PathVariable String cod, Principal principal) {
-	    VotazioneDTO votazione = vs.getVotazioneUtente(cod, principal).orElseThrow(()->new VotazioneNonTrovataException());
+	    VotazioneDTO votazione = vs.getVotazioneUtente(cod, principal);
 	    return votazione;
 	}
 	

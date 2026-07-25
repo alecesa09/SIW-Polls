@@ -97,10 +97,8 @@ public class SecurityConfiguration {
     	
     	httpSecurity
         .csrf(csrf -> csrf
-            .csrfTokenRepository(csrfTokenRepository)
-            .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-        )
-        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+        	.ignoringRequestMatchers("/rest/**")//react non puo prendere i cookie scfr dall login quindi lo disattivo
+        );
 
     httpSecurity.cors(Customizer.withDefaults());
 

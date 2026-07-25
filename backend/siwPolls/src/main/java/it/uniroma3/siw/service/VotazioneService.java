@@ -134,7 +134,7 @@ public class VotazioneService {
 		return sondaggi;
 	}
 	@Transactional(readOnly = true)
-	public Optional<VotazioneDTO> getVotazioneUtente(String cod, Principal principal) {
+	public VotazioneDTO getVotazioneUtente(String cod, Principal principal) {
 	    Utente utente = ur.findByCredentialUsername(principal.getName())
 	            .orElseThrow(() -> new UtenteNotFoundException());
 	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElseThrow(()->new VotazioneNonTrovataException());
@@ -143,7 +143,7 @@ public class VotazioneService {
 	    
 	    VotazioneDTO votazioneDTO = new VotazioneDTO(votOpt.getSondaggio().getId(), votOpt, voti);
 
-	    return Optional.of(votazioneDTO);
+	    return votazioneDTO;
 	}
 	
 	
