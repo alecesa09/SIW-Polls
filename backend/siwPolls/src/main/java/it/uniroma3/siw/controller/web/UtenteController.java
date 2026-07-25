@@ -66,7 +66,7 @@ public class UtenteController {
 	public String getListaCancellazioneUtente(Model model) {
 		List<Utente> utenti =utenteService.findAll();
 		model.addAttribute("utenti", utenti);
-		return "/admin/utente/list";
+		return "admin/utente/list";
 	}
 	
 	@GetMapping("/admin/search/utenti")
@@ -80,7 +80,7 @@ public class UtenteController {
 	    List<Utente> utenti = utenteService.findByParametri(nome, cognome, id);
 	    model.addAttribute("utenti", utenti);
 	    
-	    return "/admin/utente/list";
+	    return "admin/utente/list";
 	}
 
 	@PostMapping("/admin/cancella/utente")
