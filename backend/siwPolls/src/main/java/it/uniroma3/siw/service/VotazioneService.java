@@ -137,8 +137,8 @@ public class VotazioneService {
 	public VotazioneDTO getVotazioneUtente(String cod, Principal principal) {
 	    Utente utente = ur.findByCredentialUsername(principal.getName())
 	            .orElseThrow(() -> new UtenteNotFoundException());
-	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).get();
-
+	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElse(null);
+	    
 	    List<VotoDTO> voti = votoR.getVotiSondaggio(cod, utente.getId());
 	    
 	    VotazioneDTO votazioneDTO = new VotazioneDTO(votOpt.getSondaggio().getId(), votOpt, voti);
