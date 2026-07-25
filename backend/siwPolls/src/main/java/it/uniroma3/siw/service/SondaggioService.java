@@ -144,6 +144,7 @@ public class SondaggioService {
 	public List<Sondaggio> findAll() {
 		return sr.findAll();
 	}
+	@Transactional(readOnly=true)
 	public List<Sondaggio> findByFiltri(String titolo, String codiceAccesso,
             LocalDate dataCreazioneMin, LocalDate dataCreazioneMax) {
 
@@ -155,7 +156,7 @@ public class SondaggioService {
 		
 		return sr.findByfiltri(titoloParam, codiceAccessoParam, dataCreazioneMin, dataCreazioneMax);
 		}
-	
+	@Transactional(isolation=Isolation.REPEATABLE_READ)
 	public void cancellaSondaggio(Long id) {
 		Sondaggio sondaggio = sr.findById(id).orElseThrow(()-> new SondaggioNonTrovatoException(id.toString()));
 		sr.delete(sondaggio);

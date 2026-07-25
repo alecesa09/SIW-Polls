@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.AnyDiscriminatorImplicitValues.Strategy;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,6 +15,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -63,7 +66,7 @@ public class Sondaggio {
     @Column(unique = true)
     private String codiceAccesso;
     
-    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
     @NotEmpty(message = "Deve esserci almeno una domanda")
     private List<@Valid Domanda> domande;
     
