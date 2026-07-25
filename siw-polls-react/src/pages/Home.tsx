@@ -75,17 +75,19 @@ export default function Home() {
         {/* Colonna principale: sondaggi recenti */}
         <div className={styles.mainColumn}>
           <section className={styles.heroSection}>
-              <h1 className="title-main">Sondaggi Recenti</h1>
-              <p>Partecipa alle ultime votazioni della community.</p>
-              {utente && (
-                  <Link to="/sondaggio/crea" className={styles.btnCreaSondaggio}>
-                      + Crea un nuovo Sondaggio
-                  </Link>
-              )}
+            <h1 className="title-main">Sondaggi Recenti</h1>
+            <p>Partecipa alle ultime votazioni della community.</p>
+            {utente && (
+              <Link to="/sondaggio/crea" className={styles.btnCreaSondaggio}>
+                + Crea un nuovo Sondaggio
+              </Link>
+            )}
           </section>
 
           <div className={styles.gridContainer}>
-            {sondaggi.length === 0 ? (
+            {!Array.isArray(sondaggi) ? (
+              <p>Errore: formato dati imprevisto dal server.</p>
+            ) : sondaggi.length === 0 ? (
               <p>Nessun sondaggio disponibile al momento.</p>
             ) : (
               sondaggi.map((sondaggio) => (
@@ -101,7 +103,6 @@ export default function Home() {
                       <div className={styles.placeholderImage}>Nessuna Immagine</div>
                     )}
                   </div>
-
                   <div className={styles.cardContent}>
                     <h2 className={styles.cardTitle}>{sondaggio.titolo}</h2>
                     <p className={styles.cardMeta}>
@@ -116,40 +117,40 @@ export default function Home() {
               ))
             )}
           </div>
+
+          {/* Colonna laterale destra: accesso tramite codice */}
+          <aside className={styles.sidebarColumn}>
+            <div className={`card-custom ${styles.codiceAccessoBox}`}>
+              <h2 className={styles.codiceAccessoTitle}>Hai un codice di accesso?</h2>
+              <p className={styles.codiceAccessoText}>
+                Inserisci il codice per accedere direttamente a un sondaggio privato.
+              </p>
+
+              <form onSubmit={handleSubmitCodice} className={styles.codiceAccessoForm}>
+                <input
+                  type="text"
+                  placeholder="Es. TECH2026"
+                  value={codiceAccesso}
+                  onChange={(e) => setCodiceAccesso(e.target.value)}
+                  disabled={ricercaInCorso}
+                  className={styles.codiceAccessoInput}
+                />
+                <button
+                  type="submit"
+                  className={styles.btnPartecipa}
+                  disabled={ricercaInCorso}
+                >
+                  {ricercaInCorso ? "Ricerca in corso..." : "Vai al Sondaggio"}
+                </button>
+              </form>
+
+              {erroreCodice && (
+                <p className={styles.codiceAccessoErrore}>{erroreCodice}</p>
+              )}
+            </div>
+          </aside>
         </div>
-
-        {/* Colonna laterale destra: accesso tramite codice */}
-        <aside className={styles.sidebarColumn}>
-          <div className={`card-custom ${styles.codiceAccessoBox}`}>
-            <h2 className={styles.codiceAccessoTitle}>Hai un codice di accesso?</h2>
-            <p className={styles.codiceAccessoText}>
-              Inserisci il codice per accedere direttamente a un sondaggio privato.
-            </p>
-
-            <form onSubmit={handleSubmitCodice} className={styles.codiceAccessoForm}>
-              <input
-                type="text"
-                placeholder="Es. TECH2026"
-                value={codiceAccesso}
-                onChange={(e) => setCodiceAccesso(e.target.value)}
-                disabled={ricercaInCorso}
-                className={styles.codiceAccessoInput}
-              />
-              <button
-                type="submit"
-                className={styles.btnPartecipa}
-                disabled={ricercaInCorso}
-              >
-                {ricercaInCorso ? "Ricerca in corso..." : "Vai al Sondaggio"}
-              </button>
-            </form>
-
-            {erroreCodice && (
-              <p className={styles.codiceAccessoErrore}>{erroreCodice}</p>
-            )}
-          </div>        
-        </aside>
-      </div>
+      </div>  
     </main>
   );
 }
