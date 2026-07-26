@@ -50,7 +50,7 @@ public class RestExceptionHandler {
     }
     
     @ExceptionHandler(SalvataggioImmagineException.class)
-    public ResponseEntity<Map<String, String>> SalvataggioImmagineException (SalvataggioImmagineException  ex) {
+    public ResponseEntity<Map<String, String>> handleSalvataggioImmagineException (SalvataggioImmagineException  ex) {
     	logger.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("errore", ex.getMessage()));
