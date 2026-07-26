@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import it.uniroma3.siw.Domanda;
 import it.uniroma3.siw.Sondaggio;
 import it.uniroma3.siw.Utente;
 import it.uniroma3.siw.dto.SondaggioDTO;
@@ -29,7 +28,6 @@ import it.uniroma3.siw.exception.DataScadenzaNelPassatoException;
 import it.uniroma3.siw.exception.SalvataggioImmagineException;
 import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
 import it.uniroma3.siw.exception.UtenteNotFoundException;
-import it.uniroma3.siw.repository.DomandaRepository;
 import it.uniroma3.siw.repository.SondaggioRepository;
 import it.uniroma3.siw.repository.UtenteRepository;
 
@@ -38,13 +36,11 @@ import it.uniroma3.siw.repository.UtenteRepository;
 public class SondaggioService {
 	private final SondaggioRepository sr;
 	private final UtenteRepository ur;
-	private final DomandaRepository dr;
 
 	
-	public SondaggioService(SondaggioRepository sr, UtenteRepository ur, DomandaRepository dr) {
+	public SondaggioService(SondaggioRepository sr, UtenteRepository ur) {
 		this.sr = sr;
 		this.ur = ur;
-		this.dr = dr;
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(SondaggioService.class);

@@ -26,20 +26,17 @@ quasi tutte le viste sono state fattte in react tranne i login la registrazione 
 
 Analisi sperimentale sulle prestazioni
 
-L'analisi è stata effettuata sul caso d'uso "visualizzazione di un sondaggio": dato il codice di accesso di un sondaggio, è necessario caricare N domande (N = 30) e, per ciascuna di esse, le opzioni corrispondenti.
+L'analisi è stata effettuata sul caso d'uso "visualizzazione di un sondaggio": dato il codice di accesso di un sondaggio, è necessario caricare N domande (N = 10) e, per ciascuna di esse, le opzioni corrispondenti.
 
 Il test è stato eseguito contro un database remoto su Neon, per rendere più evidente l'impatto della latenza di rete su ogni singola query — impatto che sarebbe stato trascurabile con un database in locale.
 
-In tutti e tre gli scenari viene eseguita inizialmente una query per caricare il sondaggio. Da qui, le strategie differiscono:
-
-- LAZY / EAGER: una query per caricare tutte le domande, seguita da una query separata per le opzioni di **ciascuna** domanda (problema N+1).
-- JOIN FETCH: un'unica query aggiuntiva che carica contemporaneamente domande e opzioni tramite JOIN.
+In tutti e tre gli scenari viene eseguita inizialmente una query per caricare il sondaggio poi vengono richieste con un .getDomande() le domanda e poi in un for si richiedono le opzioni con un getOpzioni() 
 
 Risultati
 | strategia  | tempo    | numero query |
-| LAZY       | 1.5049 s |      32      |
-| EAGER      | 1.4142 s |      32      |
-| JOIN FETCH | 0.1888 s |       2      |
+| LAZY       | 1.6631 s |      32      |
+| EAGER      | 0.2466 s |       2      |
+| JOIN FETCH | 0.2469 s |       2      |
 
 Il numero di query cresce linearmente con il numero di domande sia per la strategia LAZY che per quella EAGER: entrambe generano **32 query** (1 per il sondaggio, 1 per le domande, 30 per le opzioni — una per ciascuna domanda).
 Questo evidenzia un aspetto spesso frainteso di Hibernate: impostare una relazione come `EAGER` **non elimina il problema N+1**, ma cambia solo **il momento** in cui le query vengono eseguite (immediatamente al caricamento del sondaggio, invece che al primo accesso alla collezione).

@@ -90,3 +90,60 @@ SELECT setval('opzione_seq', (SELECT MAX(id) FROM opzione));
 SELECT setval('commento_seq', (SELECT MAX(id) FROM commento));
 SELECT setval('votazione_seq', (SELECT MAX(id) FROM votazione));
 SELECT setval('voto_seq', (SELECT MAX(id) FROM voto));
+
+-- ============================================================
+-- NUOVO SONDAGGIO con 10 domande, 2 opzioni ciascuna
+-- ============================================================
+
+-- Nuovo Sondaggio (id 7)
+INSERT INTO sondaggio (id, titolo, descrizione, immagine, data_creazione, data_scadenza_voto, visibilita, codice_accesso, utente_id) VALUES (7, 'Preferenze Tech Generali', 'Un sondaggio con tante domande veloci a risposta binaria.', 'tech.png', '2026-07-24', '2026-12-31', 'PUBBLICO', '9F3B2C11-6A4D-4E7F-8B21-1234567890AB', 4);
+
+-- Nuove Domande (id 8-17) — tutte legate al sondaggio_id 7
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (8, 'Tabs o Spaces?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (9, 'Dark mode o Light mode?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (10, 'REST o GraphQL?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (11, 'SQL o NoSQL?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (12, 'Monolite o Microservizi?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (13, 'Vim o VS Code?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (14, 'TDD si o no?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (15, 'Monorepo o Polyrepo?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (16, 'Cloud pubblico o self-hosted?', 7);
+INSERT INTO domanda (id, testo, sondaggio_id) VALUES (17, 'Frontend o Backend?', 7);
+
+
+
+-- Nuove Opzioni (id 19-38) — 2 per ciascuna delle domande sopra
+INSERT INTO opzione (id, testo, domanda_id) VALUES (19, 'Tabs', 8);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (20, 'Spaces', 8);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (21, 'Dark mode', 9);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (22, 'Light mode', 9);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (23, 'REST', 10);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (24, 'GraphQL', 10);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (25, 'SQL', 11);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (26, 'NoSQL', 11);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (27, 'Monolite', 12);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (28, 'Microservizi', 12);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (29, 'Vim', 13);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (30, 'VS Code', 13);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (31, 'Si', 14);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (32, 'No', 14);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (33, 'Monorepo', 15);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (34, 'Polyrepo', 15);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (35, 'Cloud pubblico', 16);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (36, 'Self-hosted', 16);
+
+INSERT INTO opzione (id, testo, domanda_id) VALUES (37, 'Frontend', 17);
+INSERT INTO opzione (id, testo, domanda_id) VALUES (38, 'Backend', 17);
+
+-- Aggiornamento sequence (da eseguire al posto delle vecchie righe di setval in fondo al file)
+SELECT setval('sondaggio_seq', (SELECT MAX(id) FROM sondaggio));
+SELECT setval('domanda_seq', (SELECT MAX(id) FROM domanda));
+SELECT setval('opzione_seq', (SELECT MAX(id) FROM opzione));

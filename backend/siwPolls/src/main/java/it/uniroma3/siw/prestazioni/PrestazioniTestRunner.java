@@ -7,13 +7,14 @@ import org.springframework.util.StopWatch;
 import it.uniroma3.siw.Domanda;
 import it.uniroma3.siw.Opzione;
 import it.uniroma3.siw.Sondaggio;
-import it.uniroma3.siw.repository.DomandaRepository;
 import it.uniroma3.siw.repository.SondaggioRepository;
 
 
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,37 +26,54 @@ public class PrestazioniTestRunner implements CommandLineRunner {
    
     @Autowired
     private SondaggioRepository sr;
-    @Autowired
-    private DomandaRepository dr;
-    
-    
-    
+      
     @Override
     @Transactional // strategie per il fetch dellaa classifica
     public void run(String... args) throws Exception {
-    	
-    	/*
-    	//caso d`uso  visualizzare il sondaggio
-    	sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get().getDomande();//warm up
-        StopWatch stopWatchBase = new StopWatch();
-        stopWatchBase.start();
-        Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get();
-        //List<Domanda> domande = sondaggio.getDomande(); //eager lazy
-        List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());//join fetch
-        ;
-        for (Domanda d : domande) {
-        	List<Opzione> opzioni =d.getOpzioni();
-        	opzioni.size(); //per forzare il lazy
+
+        String codice = "9F3B2C11-6A4D-4E7F-8B21-1234567890AB";
+        
+        /* 
+        // warm-up per il primo test
+        sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get().getDomande();
+
+        // --- TEST 1: LAZY ---
+        StopWatch stopWatchLazy = new StopWatch();
+        stopWatchLazy.start();
+
+        Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso(codice).get();
+        
+        for (Domanda d : sondaggio.getDomande()) {
+            Set<Opzione> opzioni = d.getOpzioni();
+            opzioni.size(); // forza il lazy
         }
-        stopWatchBase.stop();
-        System.out.println("Tempo impiegato: " + stopWatchBase.getTotalTimeSeconds() + " secondi");
-        //1.5048566 secondi lazy n+1 query
-        //1.414207 secondi eager n+1 query
-        //0.1887739 secondi join fetch  3 query
+
+        stopWatchLazy.stop();
+        System.out.println("Tempo LAZY: " + stopWatchLazy.getTotalTimeSeconds() + " secondi");
         
+       
+        // warm-up per il secondo test (query diversa, serve il suo warm-up separato)
+        sr.findCompletoByCod("3AE83C52-5855-47C1-80A6-FB880DE6D31B");
+
+        // --- TEST 2: JOIN FETCH ---
+        StopWatch stopWatchJoinFetch = new StopWatch();
+        stopWatchJoinFetch.start();
+
+        Sondaggio sondaggioJoinFetch = sr.findCompletoByCod(codice).get();
+        for (Domanda d : sondaggioJoinFetch.getDomande()) {
+            Set<Opzione> opzioni = d.getOpzioni();
+            opzioni.size();
+        }
+
+        stopWatchJoinFetch.stop();
         
+        System.out.println("Tempo JOIN FETCH: " + stopWatchJoinFetch.getTotalTimeSeconds() + " secondi");
+
         System.out.println("--- FINE TEST PRESTAZIONI ---");
         */
-        
     }
+    
+    //Tempo LAZY:       1.663120299 secondi
+    //Tempo EAGER:      0.246633101 secondi
+    //Tempo JOIN FETCH: 0.246935801 secondi
 }
