@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,13 +20,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import it.uniroma3.siw.Domanda;
-import it.uniroma3.siw.Opzione;
 import it.uniroma3.siw.Sondaggio;
 import it.uniroma3.siw.Utente;
 import it.uniroma3.siw.dto.SondaggioDTO;
 import it.uniroma3.siw.dto.StatisticheDTO;
+import it.uniroma3.siw.exception.DataScadenzaNelPassatoException;
 import it.uniroma3.siw.exception.SalvataggioImmagineException;
 import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
 import it.uniroma3.siw.exception.UtenteNotFoundException;
@@ -101,6 +99,10 @@ public class SondaggioService {
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
 		
 		sondaggio.inizializza(utente);
+		
+		if(sondaggio.getDataScadenza().isBefore(LocalDate.now())) {
+			throw new DataScadenzaNelPassatoException(sondaggio.getDataScadenza().toString());
+		}
 		
 		try {
 		String nomeFileGenerato = salvaImmagineSuDisco(file);

@@ -23,7 +23,6 @@ public class RestExceptionHandler {
     	logger.error("IllegalArgumentException");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("errore", ex.getMessage()));
-        
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -52,7 +51,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(SalvataggioImmagineException.class)
     public ResponseEntity<Map<String, String>> handleSalvataggioImmagineException (SalvataggioImmagineException  ex) {
     	logger.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("errore", ex.getMessage()));
     }
     
