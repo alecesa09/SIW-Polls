@@ -49,7 +49,7 @@ public class RestExceptionHandler {
                 .body(Map.of("errore", ex.getMessage()));
     }
     
-    @ExceptionHandler(SondaggioNonTrovatoException.class)
+    @ExceptionHandler(SalvataggioImmagineException.class)
     public ResponseEntity<Map<String, String>> SalvataggioImmagineException (SalvataggioImmagineException  ex) {
     	logger.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
