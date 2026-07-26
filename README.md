@@ -26,7 +26,8 @@ quasi tutte le viste sono state fattte in react tranne i login la registrazione 
 
 Analisi sperimentale sulle prestazioni
 
-L'analisi è stata effettuata sul caso d'uso "visualizzazione di un sondaggio": dato il codice di accesso di un sondaggio, è necessario caricare N domande (N = 10) e, per ciascuna di esse, le opzioni corrispondenti.
+L'analisi è stata effettuata sul caso d'uso "visualizzazione di un sondaggio": dato il codice di accesso di un sondaggio, è necessario caricare N domande (N = 30 creando un caso fittizio per fare vedere bene le differenze di prestazione)
+e, per ciascuna di esse, le opzioni corrispondenti.
 
 Il test è stato eseguito contro un database remoto su Neon, per rendere più evidente l'impatto della latenza di rete su ogni singola query — impatto che sarebbe stato trascurabile con un database in locale.
 
@@ -36,11 +37,13 @@ Risultati
 | strategia  | tempo    | numero query |
 | LAZY       | 1.6631 s |      32      |
 | EAGER      | 0.2466 s |       2      |
-| JOIN FETCH | 0.2469 s |       2      |
+| JOIN FETCH | 0.2469 s |       1      |
 
-Il numero di query cresce linearmente con il numero di domande sia per la strategia LAZY che per quella EAGER: entrambe generano **32 query** (1 per il sondaggio, 1 per le domande, 30 per le opzioni — una per ciascuna domanda).
-Questo evidenzia un aspetto spesso frainteso di Hibernate: impostare una relazione come `EAGER` **non elimina il problema N+1**, ma cambia solo **il momento** in cui le query vengono eseguite (immediatamente al caricamento del sondaggio, invece che al primo accesso alla collezione).
+Il numero di query cresce linearmente con il numero di domande sia per la strategia LAZY : genera 32 query (1 per il sondaggio, 1 per le domande, 30 per le opzioni — una per ciascuna domanda).
 
-La strategia con `JOIN FETCH`, invece, riduce il numero di query a 2 indipendentemente dal numero di domande, portando il tempo di esecuzione da 1.5s a 0.19s con un miglioramento importante delle prestazioni. 
+La strategia con `EAGER`, invece, riduce il numero di query a 2 indipendentemente dal numero di domande, portando il tempo di esecuzione da 1.6s a 0.24s con un miglioramento importante delle prestazioni.
+(Va notato cheb il comportamento di eager è non sempre garantito con il fetch hibernate per evitare join esplosivi potrebbe decidere di fare una query per ogni domanda ripresentando cosi il problema N+1 )
+
+La strategia con `JOIN_FETCH`, invece, riduce il numero di query a 1 indipendentemente dal numero di domande, portando il tempo di esecuzione da 1.6s a 0.24s con un miglioramento importante delle prestazioni. 
 
 Questo esperimento dimostra concretamente come la scelta della strategia di fetch sia determinante per le prestazioni dell'applicazione.
