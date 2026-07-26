@@ -28,8 +28,10 @@ import it.uniroma3.siw.Sondaggio;
 import it.uniroma3.siw.Utente;
 import it.uniroma3.siw.dto.SondaggioDTO;
 import it.uniroma3.siw.dto.StatisticheDTO;
+import it.uniroma3.siw.exception.SalvataggioImmagineException;
 import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
 import it.uniroma3.siw.exception.UtenteNotFoundException;
+import it.uniroma3.siw.repository.DomandaRepository;
 import it.uniroma3.siw.repository.SondaggioRepository;
 import it.uniroma3.siw.repository.UtenteRepository;
 
@@ -38,12 +40,15 @@ import it.uniroma3.siw.repository.UtenteRepository;
 public class SondaggioService {
 	private final SondaggioRepository sr;
 	private final UtenteRepository ur;
+	private final DomandaRepository dr;
 
-	public SondaggioService(SondaggioRepository sr,UtenteRepository ur) {
+	
+	public SondaggioService(SondaggioRepository sr, UtenteRepository ur, DomandaRepository dr) {
 		this.sr = sr;
 		this.ur = ur;
-
+		this.dr = dr;
 	}
+
 	private static final Logger logger = LoggerFactory.getLogger(SondaggioService.class);
 	
 	@Transactional(readOnly=true)
@@ -51,6 +56,7 @@ public class SondaggioService {
 		Pageable pageable = PageRequest.of(0, 6);
 		return sr.findTop6RecentiAttivi(Sondaggio.Visibilita.PUBBLICO,LocalDate.now(),pageable);
 	}
+	
 	@Transactional(readOnly=true)
 	public Optional<Sondaggio> getSondaggioById(Long id) {
 		return sr.findByIdPubblici(id);
@@ -67,18 +73,20 @@ public class SondaggioService {
 	}
 
 	@Transactional(readOnly=true)
-	public List<SondaggioDTO> searchSondaggio(String str) {
+	public List<SondaggioDTO> searchSondaggiByTitolo(String str) {
 		List<SondaggioDTO> lista =sr.search(str, PageRequest.of(0, 5));
 		for(SondaggioDTO sondaggio : lista) {
 			logger.info("sondaggio"+sondaggio.getId().toString());
 			}
 		return lista;
 	}
-	@Transactional(readOnly=true)
-	public Sondaggio searchSondaggioByCodiceAcesso(String str) {
-		logger.info("codice corrente"+str);
-		Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso(str).orElseThrow(() -> new SondaggioNonTrovatoException(str));
-		return sondaggio;
+	@Transactional(readOnly=true)//
+	public Sondaggio searchSondaggioByCodiceAccesso(String str) {
+	    logger.info("ricerca sondaggio con codice accesso: " + str);
+	    Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso(str).orElseThrow(() -> new SondaggioNonTrovatoException(str));
+	    List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());
+	    sondaggio.setDomande(domande);
+	    return sondaggio;
 	}
 	
 	@Transactional(readOnly=true)
@@ -88,22 +96,19 @@ public class SondaggioService {
 	}
 	
 	
-	@Transactional(isolation=Isolation.READ_COMMITTED)//bo controlla
-	public void creaSondaggio(Sondaggio sondaggio, MultipartFile file, Principal principal) throws IOException {
+	@Transactional(isolation=Isolation.READ_COMMITTED)
+	public void creaSondaggio(Sondaggio sondaggio, MultipartFile file, Principal principal) {
 		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
-		sondaggio.setUtente(utente);
-		sondaggio.setDataCreazione(LocalDate.now());
-		String codiceGenerato = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-		sondaggio.setCodiceAccesso(codiceGenerato);
+		
+		sondaggio.inizializza(utente);
+		
+		try {
 		String nomeFileGenerato = salvaImmagineSuDisco(file);
 		sondaggio.setImmagine(nomeFileGenerato);
-		for(Domanda domanda : sondaggio.getDomande()) {
-			domanda.setSondaggio(sondaggio);
-			for(Opzione opzione : domanda.getOpzioni()) {
-				opzione.setDomanda(domanda);
-			}
+		} catch (IOException e){
+			throw new SalvataggioImmagineException();
 		}
-		//inserisci controllo domanda e opzioni con lo stesso testo
+		
 		sr.save(sondaggio);
 	}
 	
@@ -118,10 +123,10 @@ public class SondaggioService {
 	    // 1. Prendo il nome originale per estrarre l'estensione
 	    String nomeOriginale = StringUtils.cleanPath(file.getOriginalFilename());
 	    String estensione = "";
-	    
 	    int dotIndex = nomeOriginale.lastIndexOf('.');
+	    
 	    if (dotIndex >= 0) {
-	        estensione = nomeOriginale.substring(dotIndex); // Restituisce ".png", ".jpg", ecc.
+	        estensione = nomeOriginale.substring(dotIndex);
 	    }
 
 	    // 2. Genero un nome completamente nuovo e univoco

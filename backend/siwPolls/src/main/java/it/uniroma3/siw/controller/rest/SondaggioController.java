@@ -45,12 +45,12 @@ public class SondaggioController {
 	
 	@GetMapping("rest/sondaggio/search/{titolo}")
 	public List<SondaggioDTO> getSondaggioByTitolo(@PathVariable("titolo") String titolo) {
-	    return ss.searchSondaggio(titolo);
+	    return ss.searchSondaggiByTitolo(titolo);
 	}
 	
 	@GetMapping("rest/sondaggio/search/codiceAccesso/{cod}")
 	public Sondaggio getSondaggioByCodiceAccesso(@PathVariable("cod") String cod) {
-	    return ss.searchSondaggioByCodiceAcesso(cod);
+	    return ss.searchSondaggioByCodiceAccesso(cod);
 	}
 	
 	@GetMapping("rest/sondaggio/utente")

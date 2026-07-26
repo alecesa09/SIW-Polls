@@ -7,6 +7,7 @@ import org.springframework.util.StopWatch;
 import it.uniroma3.siw.Domanda;
 import it.uniroma3.siw.Opzione;
 import it.uniroma3.siw.Sondaggio;
+import it.uniroma3.siw.repository.DomandaRepository;
 import it.uniroma3.siw.repository.SondaggioRepository;
 
 
@@ -23,9 +24,11 @@ public class PrestazioniTestRunner implements CommandLineRunner {
    
     @Autowired
     private SondaggioRepository sr;
+    @Autowired
+    private DomandaRepository dr;
     
     
-
+    
     @Override
     @Transactional // strategie per il fetch dellaa classifica
     public void run(String... args) throws Exception {
@@ -36,8 +39,8 @@ public class PrestazioniTestRunner implements CommandLineRunner {
         StopWatch stopWatchBase = new StopWatch();
         stopWatchBase.start();
         Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso("TECH2026").get();
-        List<Domanda> domande = sondaggio.getDomande(); //eager lazy
-        //List<Domanda> domande = sr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());//join fetch
+        //List<Domanda> domande = sondaggio.getDomande(); //eager lazy
+        List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());//join fetch
         ;
         for (Domanda d : domande) {
         	List<Opzione> opzioni =d.getOpzioni();

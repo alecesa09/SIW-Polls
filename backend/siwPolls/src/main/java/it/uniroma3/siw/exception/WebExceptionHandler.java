@@ -1,4 +1,4 @@
-package it.uniroma3.siw.config;
+package it.uniroma3.siw.exception;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;

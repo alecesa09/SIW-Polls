@@ -36,13 +36,9 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 	@Query("SELECT s FROM Sondaggio s WHERE s.codiceAccesso = :str")
 	SondaggioDTO findSondaggioDTOByCodiceAccesso(String str);
 	
-	@EntityGraph(attributePaths = { "domande"})
+	
 	@Query("SELECT s FROM Sondaggio s WHERE s.codiceAccesso = :str")
 	Optional<Sondaggio> findSondaggioByCodiceAccesso(String str);
-	
-	//per studio prestazioni
-	@Query("SELECT DISTINCT d FROM Domanda d LEFT JOIN FETCH d.opzioni WHERE d.sondaggio.id = :sondaggioId")
-	List<Domanda> findDomandeConOpzioniBySondaggioId(@Param("sondaggioId") Long sondaggioId);
 	
 	@Query("SELECT s FROM Sondaggio s WHERE s.visibilita = PUBBLICO AND s.id = :id")
 	Optional<Sondaggio> findByIdPubblici(@Param("id") Long id);
@@ -67,4 +63,5 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 		        @Param("codiceAccesso") String codiceAccesso,
 		        @Param("dataCreazioneMin") LocalDate dataCreazioneMin,
 		        @Param("dataCreazioneMax") LocalDate dataCreazioneMax);
+	
 }

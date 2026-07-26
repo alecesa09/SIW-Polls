@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues.Strategy;
 
@@ -52,7 +53,7 @@ public class Sondaggio {
     @JsonIgnore
     private LocalDate dataCreazione;
     
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="utente_id")
     @JsonIgnore
     private Utente utente;
@@ -66,7 +67,7 @@ public class Sondaggio {
     @Column(unique = true)
     private String codiceAccesso;
     
-    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     @NotEmpty(message = "Deve esserci almeno una domanda")
     private List<@Valid Domanda> domande;
     
@@ -179,6 +180,24 @@ public class Sondaggio {
 	public void setUtente(Utente utente) {
 		this.utente = utente;
 	} 
+	
+	public void inizializza(Utente utente) {
+		this.setUtente(utente);
+		this.setDataCreazione(LocalDate.now());
+		String codiceGenerato = UUID.randomUUID().toString().toUpperCase();
+		this.setCodiceAccesso(codiceGenerato);
+		
+		for(Domanda domanda : this.getDomande()) {
+			domanda.setSondaggio(this);
+			for(Opzione opzione : domanda.getOpzioni()) {
+				opzione.setDomanda(domanda);
+			}
+		}
+		
+	}
+	
+	
+	
     
     
 }

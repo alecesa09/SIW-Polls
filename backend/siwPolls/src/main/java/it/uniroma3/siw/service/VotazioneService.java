@@ -3,10 +3,13 @@ package it.uniroma3.siw.service;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Isolation;
@@ -37,7 +40,6 @@ import it.uniroma3.siw.repository.VotoRepository;
 @Service
 public class VotazioneService {
 	private final SondaggioRepository sr;
-	private final OpzioneRepository or;
 	private final UtenteRepository ur;
 	private final DomandaRepository dr;
 	private final VotazioneRepository votazioneR;
@@ -46,7 +48,6 @@ public class VotazioneService {
 	public VotazioneService(SondaggioRepository sr, OpzioneRepository or, UtenteRepository ur, DomandaRepository dr,VotoRepository votoR,
 			VotazioneRepository votazioneR) {
 		this.sr = sr;
-		this.or = or;
 		this.ur = ur;
 		this.dr = dr;
 		this.votazioneR = votazioneR;
@@ -63,32 +64,28 @@ public class VotazioneService {
 	    
 	    Set<Long> domandeAttese = sondaggio.getDomande().stream()
 	            .map(Domanda::getId).collect(Collectors.toSet());
+	    
 	    Set<Long> domandeRisposte = votazione.getVoti().stream()
 	            .map(VotoDTO::getDomandaId).collect(Collectors.toSet());
+	    
 	    if (!domandeAttese.equals(domandeRisposte)) {
 	        throw new VotazioneIncompletaException();
 	    }
-
+	    
 	    for(VotoDTO votodto:votazione.getVoti()) {
-    		if(!or.existsByIdAndDomandaIdAndDomandaSondaggioId(votodto.getOpzioneId(),votodto.getDomandaId(), votazione.getSondaggioId())) {
-    			throw new IllegalVoteException();
-    		}
-    		else {
-    			Domanda domanda = dr.findById(votodto.getDomandaId()).get();
-    			Opzione opzione = or.findById(votodto.getOpzioneId()).get();
-    			new Voto(domanda,opzione,v);
-    		}
+    		Domanda domanda = sondaggio.getDomande().stream().filter( d -> d.getId().equals(votodto.getDomandaId())).findFirst().orElseThrow(IllegalVoteException::new);
+    		Opzione opzione = domanda.getOpzioni().stream()	.filter(d -> d.getId().equals(votodto.getOpzioneId())).findFirst().orElseThrow(IllegalVoteException::new);	
+    		
+    		new Voto(domanda,opzione,v);
     	}
-    	votazioneR.save(v);	
 	    return v;
 	}
 	
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void salvaVotazione(VotazioneDTO votazione, Principal principal) {
-	    Sondaggio sondaggio = sr.findById(votazione.getSondaggioId())
-	            .orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId().toString()));
-	    Utente utente = ur.findByCredentialUsername(principal.getName())
-	            .orElseThrow(UtenteNotFoundException::new);
+		Utente utente = getUtente(principal);
+		
+	    Sondaggio sondaggio = setSondadaggio(votazione);
 
 	    if (sondaggio.getDataScadenza().isBefore(LocalDate.now())) throw new SondaggioScadutoException();
 	    
@@ -101,32 +98,31 @@ public class VotazioneService {
 	
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void modificaVotazione(VotazioneDTO votazione, Principal principal) {
-	    Sondaggio sondaggio = sr.findById(votazione.getSondaggioId())
-	            .orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId().toString()));
-	    Utente utente = ur.findByCredentialUsername(principal.getName())
-	            .orElseThrow(UtenteNotFoundException::new);
+	    Sondaggio sondaggio = setSondadaggio(votazione);
+	    Utente utente = getUtente(principal);
 
 	    if (sondaggio.getDataScadenza().isBefore(LocalDate.now())) throw new SondaggioScadutoException();
 
 	    Votazione votazionePrecedente = votazioneR
 	            .findBySondaggioCodiceAccessoAndUtenteId(sondaggio.getCodiceAccesso(), utente.getId())
-	            .orElseThrow(VotazioneNonTrovataException::new);
+	            .orElseThrow(()->new VotazioneNonTrovataException());
 
 	    Votazione v = costruisciVotazioneValidata(votazione, sondaggio, utente);
+	    
 	    v.setId(votazionePrecedente.getId());
 	    votazioneR.save(v);
 	}
 	
 	@Transactional(readOnly=true)
 	public boolean controllaPartecipazione(String cod, Principal principal) {
-		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		Utente utente = getUtente(principal);
 		return ur.existsByIdAndPartecipazioniCodiceAccesso(utente.getId(),cod);
 	}
 	
 	@Transactional(readOnly=true)
 	public List<SondaggioDTO> getSondaggiVotatiUtente(Principal principal) {
 		logger.info("inizio ricerca sondaggi Votati utente e ancora modificabili");
-		Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+		Utente utente = getUtente(principal);
 		List<SondaggioDTO> sondaggi = sr.findSondaggiVotatiPerUtente(utente.getId());
 		for(SondaggioDTO sondaggio: sondaggi) {
 			logger.info("-" + sondaggio.getId().toString());
@@ -135,8 +131,8 @@ public class VotazioneService {
 	}
 	@Transactional(readOnly = true)
 	public VotazioneDTO getVotazioneUtente(String cod, Principal principal) {
-	    Utente utente = ur.findByCredentialUsername(principal.getName())
-	            .orElseThrow(() -> new UtenteNotFoundException());
+	    Utente utente = getUtente(principal);
+	    
 	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElse(null);
 	    
 	    List<VotoDTO> voti = votoR.getVotiSondaggio(cod, utente.getId());
@@ -150,11 +146,22 @@ public class VotazioneService {
 	
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public void eliminaVotazione(String cod, Principal principal) {
-	    Utente utente = ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+	    Utente utente = getUtente(principal);
 	    Votazione votazione = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElseThrow(()->new VotazioneNonTrovataException());
 	    Sondaggio sondaggio = votazione.getSondaggio();
 	    utente.getPartecipazioni().remove(sondaggio);
 	    votazioneR.delete(votazione);
 	    ur.save(utente);
+	}
+	
+	private Utente getUtente(Principal principal) {
+		return ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
+	}
+	
+	private Sondaggio setSondadaggio(VotazioneDTO votazione) {
+		Sondaggio sondaggio = sr.findById(votazione.getSondaggioId()).orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId().toString()));
+	    List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());
+	    sondaggio.setDomande(domande);
+	    return sondaggio;
 	}
 }

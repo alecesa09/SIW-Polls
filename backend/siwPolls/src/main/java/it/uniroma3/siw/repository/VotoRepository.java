@@ -14,6 +14,7 @@ public interface VotoRepository extends JpaRepository<Voto, Long> {
 		     + "FROM Voto v "
 		     + "WHERE v.votazione.utente.id = :idUtente AND v.votazione.sondaggio.codiceAccesso = :cod")
 		List<VotoDTO> getVotiSondaggio(@Param("cod") String coSondaggio, @Param("idUtente") Long idUtente);
+	
 			
 	
 }

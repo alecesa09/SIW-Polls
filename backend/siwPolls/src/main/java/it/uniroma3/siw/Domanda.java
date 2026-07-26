@@ -35,7 +35,7 @@ public class Domanda {
 	@JoinColumn(name="sondaggio_id")
 	private Sondaggio sondaggio;
 	
-	@OneToMany(mappedBy="domanda",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="domanda",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@NotNull(message = "La lista delle opzioni non può essere omessa")
 	@Size(min = 2, message = "Devono esserci almeno due opzioni")
 	private List<@Valid Opzione> opzioni;

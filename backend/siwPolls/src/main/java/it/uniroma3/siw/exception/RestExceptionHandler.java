@@ -1,10 +1,8 @@
-package it.uniroma3.siw.config;
+package it.uniroma3.siw.exception;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import it.uniroma3.siw.exception.SondaggioNonTrovatoException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,12 +49,12 @@ public class RestExceptionHandler {
                 .body(Map.of("errore", ex.getMessage()));
     }
     
-    @ExceptionHandler(IOException.class)
-	public ResponseEntity<Map<String, String>> handleImageException(Exception ex) {
-	logger.error(ex.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(Map.of("errore", ex.getMessage()));
-	}
+    @ExceptionHandler(SondaggioNonTrovatoException.class)
+    public ResponseEntity<Map<String, String>> SalvataggioImmagineException (SalvataggioImmagineException  ex) {
+    	logger.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("errore", ex.getMessage()));
+    }
     
     @ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String, String>> handleException(Exception ex) {
