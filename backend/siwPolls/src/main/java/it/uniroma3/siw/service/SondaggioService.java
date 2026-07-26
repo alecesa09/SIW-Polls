@@ -81,9 +81,7 @@ public class SondaggioService {
 	@Transactional(readOnly=true)//
 	public Sondaggio searchSondaggioByCodiceAccesso(String str) {
 	    logger.info("ricerca sondaggio con codice accesso: " + str);
-	    Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso(str).orElseThrow(() -> new SondaggioNonTrovatoException(str));
-	    List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());
-	    sondaggio.setDomande(domande);
+	    Sondaggio sondaggio = sr.findCompletoByCod(str).orElseThrow(() -> new SondaggioNonTrovatoException(str));
 	    return sondaggio;
 	}
 	
@@ -163,6 +161,7 @@ public class SondaggioService {
 		
 		return sr.findByfiltri(titoloParam, codiceAccessoParam, dataCreazioneMin, dataCreazioneMax);
 		}
+	
 	@Transactional(isolation=Isolation.REPEATABLE_READ)
 	public void cancellaSondaggio(Long id) {
 		Sondaggio sondaggio = sr.findById(id).orElseThrow(()-> new SondaggioNonTrovatoException(id.toString()));

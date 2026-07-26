@@ -2,6 +2,7 @@ package it.uniroma3.siw;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -38,7 +39,7 @@ public class Domanda {
 	@OneToMany(mappedBy="domanda",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@NotNull(message = "La lista delle opzioni non può essere omessa")
 	@Size(min = 2, message = "Devono esserci almeno due opzioni")
-	private List<@Valid Opzione> opzioni;
+	private Set<@Valid Opzione> opzioni;
 
 	public Long getId() {
 		return id;
@@ -64,11 +65,11 @@ public class Domanda {
 		this.sondaggio = sondaggio;
 	}
 
-	public List<Opzione> getOpzioni() {
+	public Set<Opzione> getOpzioni() {
 		return opzioni;
 	}
 	
-	public void setOpzioni(List<Opzione> opzioni) {
+	public void setOpzioni(Set<Opzione> opzioni) {
 		this.opzioni = opzioni;
 	}
 

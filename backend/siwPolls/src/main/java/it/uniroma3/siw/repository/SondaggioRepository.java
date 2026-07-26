@@ -63,5 +63,18 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 		        @Param("codiceAccesso") String codiceAccesso,
 		        @Param("dataCreazioneMin") LocalDate dataCreazioneMin,
 		        @Param("dataCreazioneMax") LocalDate dataCreazioneMax);
+
+	@Query("SELECT DISTINCT s FROM Sondaggio s " +
+		       "LEFT JOIN FETCH s.domande d " +
+		       "LEFT JOIN FETCH d.opzioni " +
+		       "WHERE s.codiceAccesso = :str")
+	Optional<Sondaggio> findCompletoByCod(@Param("str") String str);
+	
+	
+	@Query("SELECT DISTINCT s FROM Sondaggio s " +
+		       "LEFT JOIN FETCH s.domande d " +
+		       "LEFT JOIN FETCH d.opzioni " +
+		       "WHERE s.id = :id")
+	Optional<Sondaggio> findCompletoById(@Param("id") Long sondaggioId);
 	
 }

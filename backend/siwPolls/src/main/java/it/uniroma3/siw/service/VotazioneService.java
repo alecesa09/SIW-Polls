@@ -85,7 +85,7 @@ public class VotazioneService {
 	public void salvaVotazione(VotazioneDTO votazione, Principal principal) {
 		Utente utente = getUtente(principal);
 		
-	    Sondaggio sondaggio = setSondadaggio(votazione);
+	    Sondaggio sondaggio = caricaSondaggio(votazione);
 
 	    if (sondaggio.getDataScadenza().isBefore(LocalDate.now())) throw new SondaggioScadutoException();
 	    
@@ -98,7 +98,7 @@ public class VotazioneService {
 	
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public void modificaVotazione(VotazioneDTO votazione, Principal principal) {
-	    Sondaggio sondaggio = setSondadaggio(votazione);
+	    Sondaggio sondaggio = caricaSondaggio(votazione);
 	    Utente utente = getUtente(principal);
 
 	    if (sondaggio.getDataScadenza().isBefore(LocalDate.now())) throw new SondaggioScadutoException();
@@ -133,7 +133,7 @@ public class VotazioneService {
 	public VotazioneDTO getVotazioneUtente(String cod, Principal principal) {
 	    Utente utente = getUtente(principal);
 	    
-	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElse(null);
+	    Votazione votOpt = votazioneR.findBySondaggioCodiceAccessoAndUtenteId(cod, utente.getId()).orElseThrow(()->new VotazioneNonTrovataException());
 	    
 	    List<VotoDTO> voti = votoR.getVotiSondaggio(cod, utente.getId());
 	    
@@ -158,10 +158,9 @@ public class VotazioneService {
 		return ur.findByCredentialUsername(principal.getName()).orElseThrow(() -> new UtenteNotFoundException());
 	}
 	
-	private Sondaggio setSondadaggio(VotazioneDTO votazione) {
-		Sondaggio sondaggio = sr.findById(votazione.getSondaggioId()).orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId().toString()));
-	    List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());
-	    sondaggio.setDomande(domande);
+	private Sondaggio caricaSondaggio(VotazioneDTO votazione) {
+		Sondaggio sondaggio = sr.findCompletoById(votazione.getSondaggioId()).orElseThrow(() -> new SondaggioNonTrovatoException(votazione.getSondaggioId().toString()));
 	    return sondaggio;
 	}
+	
 }

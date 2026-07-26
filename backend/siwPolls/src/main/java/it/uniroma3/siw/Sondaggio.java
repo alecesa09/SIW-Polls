@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues.Strategy;
@@ -69,7 +70,7 @@ public class Sondaggio {
     
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
     @NotEmpty(message = "Deve esserci almeno una domanda")
-    private List<@Valid Domanda> domande;
+    private Set<@Valid Domanda> domande;
     
    
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -140,11 +141,11 @@ public class Sondaggio {
 		this.id = id;
 	}
 
-	public List<Domanda> getDomande() {
+	public Set<Domanda> getDomande() {
 		return domande;
 	}
 
-	public void setDomande(List<Domanda> domande) {
+	public void setDomande(Set<Domanda> domande) {
 		this.domande = domande;
 	}
 
