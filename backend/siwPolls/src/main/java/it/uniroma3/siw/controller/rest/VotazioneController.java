@@ -53,9 +53,14 @@ public class VotazioneController {
 	}
 	
 	@GetMapping("rest/sondaggio/votazione/{cod}")
-	public VotazioneDTO getVotazioneUtente(@PathVariable String cod, Principal principal) {
-	    VotazioneDTO votazione = vs.getVotazioneUtente(cod, principal);
-	    return votazione;
+	public ResponseEntity<VotazioneDTO> getVotazioneUtente(@PathVariable String cod, Principal principal) {
+		VotazioneDTO votazione;
+		try {
+	    votazione = vs.getVotazioneUtente(cod, principal);
+		} catch (VotazioneNonTrovataException e) {
+			return ResponseEntity.ok(null);
+		}
+	    return ResponseEntity.ok(votazione);
 	}
 	
 	@DeleteMapping("rest/sondaggio/votazione/{cod}")

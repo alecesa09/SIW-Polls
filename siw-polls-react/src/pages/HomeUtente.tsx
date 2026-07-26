@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../components/AuthContext";
 import { BACKEND_URL } from "../components/config";
-import {ricercaSondaggiUtente} from "../service/SondaggioService";
+import { ricercaSondaggiUtente } from "../service/SondaggioService";
 import { ricercaSondaggiVotatiUtente } from "../service/VotazioneService";
 import type { SondaggioDTO } from "../types";
 import styles from "./HomeUtente.module.css";
@@ -37,66 +37,36 @@ export default function UtenteHome() {
           "Errore durante il recupero delle informazioni utente:",
           error
         );
+        alert(error);
       }
     };
 
     caricaDati();
   }, [utente]);
-
-  /*
-   * Calcolo del numero totale di pagine.
-   * Math.ceil arrotonda verso l'alto.
-   *
-   * Esempio:
-   * 11 elementi / 5 = 2,2
-   * Math.ceil(2,2) = 3 pagine
-   */
-  const totalePagineCreati = Math.ceil(
+  
+  const numeroPagineSondaggiCreati = Math.ceil(
     sondaggiCreati.length / ELEMENTI_PER_PAGINA
   );
-
-  const totalePagineVotati = Math.ceil(
+  const numeroPagineSondaggiVotati = Math.ceil(
     sondaggiVotati.length / ELEMENTI_PER_PAGINA
   );
 
-  /*
-   * Calcolo degli indici necessari per estrarre
-   * solamente gli elementi della pagina corrente.
-   */
-  const indiceInizioCreati =
-    (paginaCreati - 1) * ELEMENTI_PER_PAGINA;
-
-  const indiceFineCreati =
-    indiceInizioCreati + ELEMENTI_PER_PAGINA;
-
-  const indiceInizioVotati =
-    (paginaVotati - 1) * ELEMENTI_PER_PAGINA;
-
-  const indiceFineVotati =
-    indiceInizioVotati + ELEMENTI_PER_PAGINA;
-
-  /*
-   * slice non modifica l'array originale.
-   * Restituisce solamente gli elementi della pagina corrente.
-   */
-  const sondaggiCreatiPagina = sondaggiCreati.slice(
-    indiceInizioCreati,
-    indiceFineCreati
+  const sondaggiCreatiCorrenti = sondaggiCreati.slice(
+    (paginaCreati - 1) * ELEMENTI_PER_PAGINA,
+    paginaCreati * ELEMENTI_PER_PAGINA
   );
 
-  const sondaggiVotatiPagina = sondaggiVotati.slice(
-    indiceInizioVotati,
-    indiceFineVotati
+  const sondaggiVotatiCorrenti = sondaggiVotati.slice(
+    (paginaVotati - 1) * ELEMENTI_PER_PAGINA,
+    paginaVotati * ELEMENTI_PER_PAGINA
   );
 
   return (
     <main className={styles.homeContainer}>
       <section className={styles.heroSection}>
         <h1>La tua area personale</h1>
-
         <p>
-          Gestisci i sondaggi che hai creato e le votazioni ancora
-          modificabili.
+          Gestisci i sondaggi che hai creato e le votazioni ancora modificabili.
         </p>
       </section>
 
@@ -112,7 +82,7 @@ export default function UtenteHome() {
           ) : (
             <>
               <ul className={styles.pollList}>
-                {sondaggiCreatiPagina.map((sondaggio) => (
+                {sondaggiCreatiCorrenti.map((sondaggio) => (
                   <li
                     key={sondaggio.codiceAccesso}
                     className={styles.pollItem}
@@ -121,16 +91,18 @@ export default function UtenteHome() {
                       to={`/sondaggio/${sondaggio.codiceAccesso}`}
                       className={styles.pollLink}
                     >
-                      <p className={styles.cardTitle}>
-                          <span>{sondaggio.titolo}</span>
-                          <span className={styles.codiceBadge}>codice: {sondaggio.codiceAccesso}</span>
-                      </p>
+                      <div className={styles.cardTitle}>
+                        <div>{sondaggio.titolo}</div>
+                        <div className={styles.codiceBadge}>
+                          codice: {sondaggio.codiceAccesso}
+                        </div>
+                      </div>
                     </Link>
                   </li>
                 ))}
               </ul>
 
-              {totalePagineCreati > 1 && (
+              {numeroPagineSondaggiCreati > 1 && (
                 <div
                   className={styles.pagination}
                   aria-label="Paginazione sondaggi creati"
@@ -139,7 +111,7 @@ export default function UtenteHome() {
                     type="button"
                     className={styles.paginationButton}
                     onClick={() =>
-                      setPaginaCreati((pagina) => pagina - 1)
+                      setPaginaCreati((pagina) => Math.max(pagina - 1, 1))
                     }
                     disabled={paginaCreati === 1}
                   >
@@ -147,17 +119,19 @@ export default function UtenteHome() {
                   </button>
 
                   <span className={styles.paginationInfo}>
-                    Pagina {paginaCreati} di {totalePagineCreati}
+                    Pagina {paginaCreati} di {numeroPagineSondaggiCreati}
                   </span>
 
                   <button
                     type="button"
                     className={styles.paginationButton}
                     onClick={() =>
-                      setPaginaCreati((pagina) => pagina + 1)
+                      setPaginaCreati((pagina) =>
+                        Math.min(pagina + 1, numeroPagineSondaggiCreati)
+                      )
                     }
                     disabled={
-                      paginaCreati === totalePagineCreati
+                      paginaCreati === numeroPagineSondaggiCreati
                     }
                   >
                     Successiva
@@ -181,7 +155,7 @@ export default function UtenteHome() {
           ) : (
             <>
               <ul className={styles.pollList}>
-                {sondaggiVotatiPagina.map((sondaggio) => (
+                {sondaggiVotatiCorrenti.map((sondaggio) => (
                   <li
                     key={sondaggio.codiceAccesso}
                     className={styles.pollItem}
@@ -190,14 +164,13 @@ export default function UtenteHome() {
                       to={`/sondaggio/${sondaggio.codiceAccesso}`}
                       className={styles.pollLink}
                     >
-                      Modifica la tua votazione per:{" "}
-                      {sondaggio.titolo}
+                      Modifica la tua votazione per: {sondaggio.titolo}
                     </Link>
                   </li>
                 ))}
               </ul>
 
-              {totalePagineVotati > 1 && (
+              {numeroPagineSondaggiVotati > 1 && (
                 <div
                   className={styles.pagination}
                   aria-label="Paginazione voti modificabili"
@@ -206,7 +179,7 @@ export default function UtenteHome() {
                     type="button"
                     className={styles.paginationButton}
                     onClick={() =>
-                      setPaginaVotati((pagina) => pagina - 1)
+                      setPaginaVotati((pagina) => Math.max(pagina - 1, 1))
                     }
                     disabled={paginaVotati === 1}
                   >
@@ -214,17 +187,19 @@ export default function UtenteHome() {
                   </button>
 
                   <span className={styles.paginationInfo}>
-                    Pagina {paginaVotati} di {totalePagineVotati}
+                    Pagina {paginaVotati} di {numeroPagineSondaggiVotati}
                   </span>
 
                   <button
                     type="button"
                     className={styles.paginationButton}
                     onClick={() =>
-                      setPaginaVotati((pagina) => pagina + 1)
+                      setPaginaVotati((pagina) =>
+                        Math.min(pagina + 1, numeroPagineSondaggiVotati)
+                      )
                     }
                     disabled={
-                      paginaVotati === totalePagineVotati
+                      paginaVotati === numeroPagineSondaggiVotati
                     }
                   >
                     Successiva

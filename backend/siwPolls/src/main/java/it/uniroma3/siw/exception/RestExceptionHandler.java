@@ -37,7 +37,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgument(RuntimeException ex) {
     	logger.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("errore", ex.getMessage()));
     }
     
