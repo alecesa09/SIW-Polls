@@ -34,12 +34,12 @@ public class PrestazioniTestRunner implements CommandLineRunner {
     @Transactional // strategie per il fetch dellaa classifica
     public void run(String... args) throws Exception {
     	
-    	
+    	/*
     	//caso d`uso  visualizzare il sondaggio
-    	sr.findSondaggioByCodiceAccesso("TECH2026").get().getDomande();//warm up
+    	sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get().getDomande();//warm up
         StopWatch stopWatchBase = new StopWatch();
         stopWatchBase.start();
-        Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso("TECH2026").get();
+        Sondaggio sondaggio = sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get();
         //List<Domanda> domande = sondaggio.getDomande(); //eager lazy
         List<Domanda> domande = dr.findDomandeConOpzioniBySondaggioId(sondaggio.getId());//join fetch
         ;
@@ -55,6 +55,7 @@ public class PrestazioniTestRunner implements CommandLineRunner {
         
         
         System.out.println("--- FINE TEST PRESTAZIONI ---");
+        */
         
     }
 }
