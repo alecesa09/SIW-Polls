@@ -28,7 +28,8 @@ public class Domanda {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@NotBlank
+	
+	@NotBlank(message ="il testo della domanda non puo essere vuoto")
 	private String testo;
 	
 	@ManyToOne
@@ -38,7 +39,7 @@ public class Domanda {
 	
 	@OneToMany(mappedBy="domanda",cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@NotNull(message = "La lista delle opzioni non può essere omessa")
-	@Size(min = 2, message = "Devono esserci almeno due opzioni per ogni domanda")
+	@Size(min = 2, message = "Devono esserci almeno due opzioni per ogni domanda (controlla che i testi delle opzioni non siano uguali)")
 	private Set<@Valid Opzione> opzioni;
 
 	public Long getId() {
@@ -75,7 +76,7 @@ public class Domanda {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(testo);
 	}
 
 	@Override
@@ -87,7 +88,9 @@ public class Domanda {
 		if (getClass() != obj.getClass())
 			return false;
 		Domanda other = (Domanda) obj;
-		return Objects.equals(id, other.id);
+		return Objects.equals(testo, other.testo);
 	}
+
+	
 	
 }

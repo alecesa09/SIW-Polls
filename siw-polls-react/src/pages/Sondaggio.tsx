@@ -6,6 +6,7 @@ import { ricercaPerCodiceAccesso, getCommentiSondaggio, getStatistiche } from ".
 import { controllaPartecipazione, eliminaVotazione, getVotazioneUtente } from "../service/VotazioneService";
 import type { Sondaggio, Commento, Statistica } from '../types';
 import styles from './Sondaggio.module.css';
+import gestisciErrore from "../components/gestoreErrori";
 
 export default function Sondaggio() {
     const { cod } = useParams<{ cod: string }>();
@@ -17,68 +18,54 @@ export default function Sondaggio() {
     const [statistiche, setStatistiche] = useState<Statistica[]>([]);
     const [haGiaVotato, setHaGiaVotato] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [scaduto,setScaduto]= useState<boolean>(false);
 
     useEffect(() => {
-        const fetchDati = async () => {
-            if (cod===undefined) {
-                setError("codice del sondaggio mancante.");
-                setLoading(false);
-                return;
-            }
-            try {
-                const sondaggioData = await ricercaPerCodiceAccesso(cod);
-                setSondaggio(sondaggioData);
-                if (utente) {
-                const [giaVotato, commentiData] = await Promise.all([
-                    controllaPartecipazione(cod),
-                    getCommentiSondaggio(cod)
-                ]);
-                setScaduto(
-                    sondaggioData?.dataScadenza 
-                        ? new Date(sondaggioData.dataScadenza).getTime() < Date.now() 
-                        : false
-                );
-                setHaGiaVotato(giaVotato);
-                setCommenti(commentiData);
+    const fetchDati = async () => {
+        if (!cod) {
+            alert("Codice del sondaggio mancante.");
+            setLoading(false);
+            return;
+        }
 
-                if (giaVotato) {
-                    const [statisticheData, votazioneUtente] = await Promise.all([
-                        getStatistiche(cod),
-                        getVotazioneUtente(cod)
-                    ]);
-                    setStatistiche(statisticheData);
-                    setVotoModificabile(Boolean(votazioneUtente));
-                }
-}
-            } catch (err: any) {
-                console.error("Errore nel recupero del sondaggio:", err);
-                if (err.response && err.response.status === 404) {
-                    setError("Sondaggio non trovato.");
-                } else if (err.response && err.response.status >= 500) {
-                    navigate('/500');
-                } else {
-                    setError("Impossibile caricare il sondaggio al momento.");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDati();
-    }, [cod, navigate, utente]);
+        try {
+            const sondaggioData = await ricercaPerCodiceAccesso(cod);
+            setSondaggio(sondaggioData);
+            setScaduto(
+                sondaggioData?.dataScadenza
+                    ? new Date(sondaggioData.dataScadenza).getTime() < Date.now()
+                    : false
+            );
+
+            if (!utente) return; // utente non loggato: fermati qui, niente commenti/voti da caricare
+
+            const [giaVotato, commentiData] = await Promise.all([
+                controllaPartecipazione(cod),
+                getCommentiSondaggio(cod)
+            ]);
+            setHaGiaVotato(giaVotato);
+            setCommenti(commentiData);
+
+            if (!giaVotato) return;
+
+            const [statisticheData, votazioneUtente] = await Promise.all([
+                getStatistiche(cod),
+                getVotazioneUtente(cod)
+            ]);
+            setStatistiche(statisticheData);
+            setVotoModificabile(Boolean(votazioneUtente));
+
+        } catch (error: any) {
+            gestisciErrore(error, navigate);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchDati();
+}, [cod, navigate, utente]);
 
     if (loading) return <h2 className={styles.centerMessage}>Caricamento in corso...</h2>;
-
-    if (error) {
-        return (
-            <div className={styles.errorContainer}>
-                <h2>Oops!</h2>
-                <p>{error}</p>
-                <Link to="/" className={styles.linkHome}>Torna alla Home</Link>
-            </div>
-        );
-    }
 
     if (!sondaggio) return <h2 className={styles.centerMessage}>Nessun dato disponibile.</h2>;
 
@@ -99,16 +86,17 @@ export default function Sondaggio() {
     const eliminaVoto = async () => {
         try 
         {if (!cod) {
-                setError("ID del sondaggio mancante.");
+                alert("ID del sondaggio mancante.");
                 setLoading(false);
                 return;
             }
             await eliminaVotazione(cod);
             alert("Voto eliminato con successo!");
             navigate(`/`);
-        } catch (error) {
-            console.error("Errore durante l'eliminazione del voto:", error);
-            alert("attenzione votazione non associata al tuo account o non hai ancora votato o hai votato in modo anonimo");
+        } catch (error: any) {
+            console.error("Errore durante l'invio del voto:", error);
+            const messaggio = error?.response?.data || "Errore durante l'invio del voto. Riprova.";
+            alert(messaggio + "attenzione se si ha votato in modod anonimo non è possibile eliminare li voto");
         }
     };
 

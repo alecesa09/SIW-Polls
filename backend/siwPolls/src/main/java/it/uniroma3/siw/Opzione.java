@@ -21,7 +21,7 @@ public class Opzione {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@NotBlank
+	@NotBlank(message ="il testo dell'opzione non puo essere vuoto")
 	private String testo;
 	
 	@ManyToOne
@@ -51,9 +51,18 @@ public class Opzione {
 	public void setDomanda(Domanda domanda) {
 		this.domanda = domanda;
 	}
+	
+	
+	public List<Voto> getVoti() {
+	    return voti;
+	}
+
+	public void setVoti(List<Voto> voti) {
+	    this.voti = voti;
+	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(testo);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -64,14 +73,6 @@ public class Opzione {
 		if (getClass() != obj.getClass())
 			return false;
 		Opzione other = (Opzione) obj;
-		return Objects.equals(id, other.id);
-	}
-	
-	public List<Voto> getVoti() {
-	    return voti;
-	}
-
-	public void setVoti(List<Voto> voti) {
-	    this.voti = voti;
+		return Objects.equals(testo, other.testo);
 	}
 }

@@ -6,6 +6,7 @@ import styles from './Home.module.css';
 import { BACKEND_URL } from '../components/config';
 import type { SondaggioDTO } from '../types';
 import { useAuth } from '../components/AuthContext';
+import gestisciErrore from '../components/gestoreErrori';
 
 export default function Home() {
   const [sondaggi, setSondaggi] = useState<SondaggioDTO[]>([]);
@@ -48,15 +49,8 @@ export default function Home() {
     try {
       const sondaggio = await ricercaPerCodiceAccesso(codice);
       navigate(`/sondaggio/${sondaggio.codiceAccesso}`);
-    } catch (err: any) {
-      console.error("Errore nella ricerca per codice:", err);
-      if (err.response && err.response.status === 404) {
-        setErroreCodice("Nessun sondaggio trovato con questo codice.");
-      } else {
-        setErroreCodice("Si è verificato un errore. Riprova.");
-      }
-    } finally {
-      setRicercaInCorso(false);
+    } catch (error: any) {
+        gestisciErrore(error, navigate);
     }
   };
 

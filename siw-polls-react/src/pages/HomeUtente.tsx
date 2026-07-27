@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../components/AuthContext";
 import { BACKEND_URL } from "../components/config";
@@ -7,11 +7,14 @@ import { ricercaSondaggiUtente } from "../service/SondaggioService";
 import { ricercaSondaggiVotatiUtente } from "../service/VotazioneService";
 import type { SondaggioDTO } from "../types";
 import styles from "./HomeUtente.module.css";
+import gestisciErrore from "../components/gestoreErrori";
 
 const ELEMENTI_PER_PAGINA = 5;
 
 export default function UtenteHome() {
   const { utente } = useAuth();
+
+  const navigate = useNavigate();
 
   const [sondaggiCreati, setSondaggiCreati] = useState<SondaggioDTO[]>([]);
   const [sondaggiVotati, setSondaggiVotati] = useState<SondaggioDTO[]>([]);
@@ -32,12 +35,8 @@ export default function UtenteHome() {
 
         setSondaggiCreati(creati);
         setSondaggiVotati(votati);
-      } catch (error) {
-        console.error(
-          "Errore durante il recupero delle informazioni utente:",
-          error
-        );
-        alert(error);
+      } catch (error: any) {
+        gestisciErrore(error, navigate);
       }
     };
 

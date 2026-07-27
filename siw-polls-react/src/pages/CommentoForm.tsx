@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import styles from "./CommentoForm.module.css";
 import { useAuth } from "../components/AuthContext";
 import { BACKEND_URL } from "../components/config";
+import gestisciErrore from "../components/gestoreErrori";
 
 export default function SezioneCommento() {
     const navigate = useNavigate();
@@ -30,12 +31,11 @@ export default function SezioneCommento() {
                 alert("Commento registrato con successo!");
                 navigate(`/sondaggio/${cod}`);
             }
-        } catch (error) {
-            console.error("Errore durante l'invio del commento:", error);
-            alert("Si è verificato un errore durante l'invio del commento. Riprova.");
+        } catch (error: any) {
+            gestisciErrore(error, navigate);
         } finally {
-            setIsSubmitting(false);
-        }
+                setIsSubmitting(false);
+            }
     };
 
     return (

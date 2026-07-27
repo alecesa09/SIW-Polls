@@ -5,6 +5,7 @@ import { postVotazione, getVotazioneUtente, putVotazione } from '../service/Vota
 import styles from './Sondaggio.module.css'; // Assicurati di avere questo file
 import { BACKEND_URL } from '../components/config';
 import { useAuth } from '../components/AuthContext';
+import gestisciErrore from '../components/gestoreErrori';
 
 function SondaggioForm() {
     const location = useLocation();
@@ -16,6 +17,7 @@ function SondaggioForm() {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [isNewVote, setIsNewVote] = useState<boolean>(true);
     const [caricamentoVoto, setCaricamentoVoto] = useState<boolean>(true); // nuovo: evita submit prima di sapere se è nuovo o modifica
+    const [erroreVoto, setErroreVoto] = useState<string | null>(null);
 
     useEffect(() => {
         if (!sondaggio) return;
@@ -38,9 +40,8 @@ function SondaggioForm() {
                 }
             })
             .catch(error => {
-                console.error("Errore durante il caricamento del voto:", error);
-                setIsNewVote(true);
-        })
+                gestisciErrore(error, navigate);
+            })
         .finally(() => setCaricamentoVoto(false));
     }, [sondaggio]);
 
@@ -88,13 +89,16 @@ function SondaggioForm() {
             }
             
             navigate(`/sondaggio/${sondaggio.codiceAccesso}/commentoForm`);
-        } catch (error) {
-            console.error("Errore durante l'invio del voto:", error);
-            alert("Errore durante l'invio del voto:" + error);
+        }  catch (error: any) {
+            if (error?.response?.status === 400) {
+                setErroreVoto(error?.response?.data || "Richiesta non valida.");
+            } else {
+                gestisciErrore(error, navigate);
+            }
         } finally {
-            setIsSubmitting(false);
-        }
-    };
+                    setIsSubmitting(false);
+                }
+            };
 
     return (
         <div className={styles.container}>
@@ -138,6 +142,11 @@ function SondaggioForm() {
                         <option value="ANONIMA">Voto Anonimo (non sarai associato al voto ma il voto sara irrintracciabile e non modificabile)</option>
                     </select>
                 </div>
+                {erroreVoto && (
+                    <p style={{ color: 'red', whiteSpace: 'pre-line', marginBottom: '10px' }}>
+                        {erroreVoto}
+                    </p>
+                )}
                 <div className={styles.actionBox}>
                     <button 
                         type="submit" 

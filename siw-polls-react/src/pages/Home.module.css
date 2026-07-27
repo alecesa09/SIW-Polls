@@ -146,12 +146,12 @@
   color: var(--text-muted);
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Divisore elegante */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: auto; 
 }
 
-/* Pulsante Partecipa stilizzato */
 .btnPartecipa {
-  display: inline-block;
+  display: block;
   text-align: center;
   background-color: var(--primary-color);
   color: #ffffff;
@@ -165,28 +165,7 @@
 
 .btnPartecipa:hover {
   background-color: var(--primary-hover);
-  transform: scale(1.02); /* Leggero ingrandimento al click */
-}
-
-/* Responsività per Tablet e Smartphone */
-@media (max-width: 992px) {
-  .gridContainer {
-    grid-template-columns: repeat(2, 1fr); /* 2 colonne sui tablet */
-  }
-}
-
-@media (max-width: 768px) {
-  .gridContainer {
-    grid-template-columns: 1fr; /* 1 colonna sugli smartphone */
-  }
-  
-  .heroSection {
-    padding: 30px 15px;
-  }
-  
-  .heroSection h1 {
-    font-size: 2rem;
-  }
+  transform: scale(1.02);
 }
 
 .pageLayout {
@@ -197,14 +176,14 @@
 
 .mainColumn {
   flex: 1;
-  min-width: 0; /* evita overflow della grid in flex */
+  min-width: 0;
 }
 
 .sidebarColumn {
   width: 300px;
   flex-shrink: 0;
   position: sticky;
-  top: 90px; /* sotto la navbar sticky, regola in base alla sua altezza */
+  top: 90px;
 }
 
 .codiceAccessoBox {
@@ -244,15 +223,4 @@
   color: var(--secondary-color);
   font-size: 0.85rem;
   margin-top: var(--spacing-sm);
-}
-
-/* Su schermi piccoli, la colonna laterale va sotto invece che a fianco */
-@media (max-width: 768px) {
-  .pageLayout {
-    flex-direction: column;
-  }
-  .sidebarColumn {
-    width: 100%;
-    position: static;
-  }
 }

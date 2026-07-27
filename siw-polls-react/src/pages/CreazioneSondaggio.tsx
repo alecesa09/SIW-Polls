@@ -7,10 +7,12 @@ import CreazioneDomanda from "../components/CreazioneSondaggio/CreazioneDomanda"
 import type { SondaggioForm, DomandaForm } from "../types/index.ts";
 import { creaSondaggio } from "../service/SondaggioService";
 import styles from './CreazioneSondaggio.module.css';
+import gestisciErrore from "../components/gestoreErrori.ts";
 
 export default function CreazioneSondaggio() {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
+  const [erroreVoto, setErroreVoto] = useState<string | null>(null);
   const [sondaggio, setSondaggio] = useState<SondaggioForm>({
     titolo: '',
     descrizione: '',
@@ -51,12 +53,11 @@ export default function CreazioneSondaggio() {
       await creaSondaggio(sondaggio, file);
       navigate("/utenteHome");
     } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        // Se la risposta è un oggetto campo -> messaggio
-        alert([error.response.data]);
-      } else {
-        alert('Si è verificato un errore inaspettato.');
-      }
+        if (error?.response?.status === 400) {
+        setErroreVoto(error?.response?.data || "Richiesta non valida.");
+    } else {
+        gestisciErrore(error, navigate);
+    }
     }
   };
 
@@ -138,7 +139,11 @@ export default function CreazioneSondaggio() {
         />
       </div>
     ))}
-
+    {erroreVoto && (
+      <p style={{ color: 'red', whiteSpace: 'pre-line', marginBottom: '10px' }}>
+          {erroreVoto}
+      </p>
+    )}
     <button type="submit" className={styles.btnPrimary}>Crea Sondaggio</button>
   </form>
 );

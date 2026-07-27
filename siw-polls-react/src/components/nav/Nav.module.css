@@ -1,4 +1,4 @@
-/* Contenitore principale della navbar */
+
 .header {
   background-color: var(--surface-color);
   box-shadow: var(--shadow-sm);
@@ -16,7 +16,6 @@
   height: 70px;
 }
 
-/* Stili del Logo */
 .logoContainer {
   display: flex;
   align-items: center;
@@ -34,7 +33,6 @@
   opacity: 0.85;
 }
 
-/* Lista di navigazione semantica */
 .navMenu {
   display: flex;
   align-items: center;
@@ -49,7 +47,6 @@
   align-items: center;
 }
 
-/* Stile base per i link di testo (es. Accedi) */
 .navLink {
   color: var(--text-main);
   text-decoration: none;
@@ -63,7 +60,6 @@
   color: var(--primary-color);
 }
 
-/* Stile base per tutti i bottoni e link a forma di bottone */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -79,7 +75,6 @@
   border: 2px solid transparent;
 }
 
-/* Variante Primaria (es. Registrati) */
 .btnPrimary {
   background-color: var(--primary-color);
   color: var(--surface-color);
@@ -92,7 +87,6 @@
   transform: translateY(-1px);
 }
 
-/* Variante Secondaria (es. Crea Sondaggio) */
 .btnSecondary {
   background-color: var(--secondary-color);
   color: var(--surface-color);
@@ -100,7 +94,7 @@
 }
 
 .btnSecondary:hover {
-  background-color: #b0003a; /* Una sfumatura più scura del tuo secondary-color */
+  background-color: #b0003a;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }

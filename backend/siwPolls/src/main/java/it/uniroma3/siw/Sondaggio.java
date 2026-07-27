@@ -38,16 +38,16 @@ public class Sondaggio {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message="inserire il titolo")
     private String titolo;
 
-    @NotBlank
+    @NotBlank(message="inserire una descrizione")
     private String descrizione;
     	
     private String immagine;
     
     
-    @NotNull
+    @NotNull(message="inserire una data di scadenza per la votazione")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataScadenzaVoto;
     
@@ -62,7 +62,7 @@ public class Sondaggio {
     public enum Visibilita { PUBBLICO, PRIVATO }
     
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @NotNull(message="visibilita non selezionata")
     private Visibilita visibilita;
     
     @Column(unique = true)
