@@ -31,7 +31,7 @@ import it.uniroma3.siw.exception.UtenteNotFoundException;
 import it.uniroma3.siw.exception.VotazioneIncompletaException;
 import it.uniroma3.siw.exception.VotazioneNonTrovataException;
 import it.uniroma3.siw.exception.VotoGiaEspressoException;
-import it.uniroma3.siw.repository.OpzioneRepository;
+
 import it.uniroma3.siw.repository.SondaggioRepository;
 import it.uniroma3.siw.repository.UtenteRepository;
 import it.uniroma3.siw.repository.VotazioneRepository;
@@ -40,11 +40,10 @@ import it.uniroma3.siw.repository.VotoRepository;
 public class VotazioneService {
 	private final SondaggioRepository sr;
 	private final UtenteRepository ur;
-
 	private final VotazioneRepository votazioneR;
 	private final VotoRepository votoR;
 
-	public VotazioneService(SondaggioRepository sr, OpzioneRepository or, UtenteRepository ur,VotoRepository votoR,
+	public VotazioneService(SondaggioRepository sr, UtenteRepository ur,VotoRepository votoR,
 			VotazioneRepository votazioneR) {
 		this.sr = sr;
 		this.ur = ur;

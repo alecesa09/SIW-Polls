@@ -68,7 +68,7 @@ public class SondaggioService {
 
 	@Transactional(readOnly=true)
 	public List<SondaggioDTO> searchSondaggiByTitolo(String str) {
-		List<SondaggioDTO> lista =sr.search(str, PageRequest.of(0, 5));
+		List<SondaggioDTO> lista =sr.findByTitoloAndPubblico(str, PageRequest.of(0, 5));
 		for(SondaggioDTO sondaggio : lista) {
 			logger.info("sondaggio"+sondaggio.getId().toString());
 			}

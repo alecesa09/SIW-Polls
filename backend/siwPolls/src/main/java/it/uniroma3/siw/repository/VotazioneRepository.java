@@ -12,6 +12,5 @@ public interface VotazioneRepository extends JpaRepository<Votazione, Long> {
 	
 	Optional<Votazione> findBySondaggioCodiceAccessoAndUtenteId(String cod, Long utenteId);
 
-	Optional<Votazione> findBySondaggioIdAndUtenteId(Long idSondaggio, Long id);
 
 }

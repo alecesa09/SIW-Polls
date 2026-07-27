@@ -33,7 +33,7 @@ public class PrestazioniTestRunner implements CommandLineRunner {
 
         String codice = "9F3B2C11-6A4D-4E7F-8B21-1234567890AB";
         
-        /* 
+        
         // warm-up per il primo test
         sr.findSondaggioByCodiceAccesso("3AE83C52-5855-47C1-80A6-FB880DE6D31B").get().getDomande();
 
@@ -70,7 +70,7 @@ public class PrestazioniTestRunner implements CommandLineRunner {
         System.out.println("Tempo JOIN FETCH: " + stopWatchJoinFetch.getTotalTimeSeconds() + " secondi");
 
         System.out.println("--- FINE TEST PRESTAZIONI ---");
-        */
+        
     }
     
     //Tempo LAZY:       1.663120299 secondi

@@ -31,12 +31,8 @@ public interface SondaggioRepository extends JpaRepository<Sondaggio, Long> {
 	List<StatisticheDTO> getStatistiche(@Param("codiceAccesso") String codiceAccesso);
 	
 	@Query("SELECT s FROM Sondaggio s WHERE s.visibilita = 'PUBBLICO' AND LOWER(s.titolo) LIKE LOWER(CONCAT('%', :str, '%'))")
-	List<SondaggioDTO> search(@Param("str") String str, Pageable pageable);
+	List<SondaggioDTO> findByTitoloAndPubblico(@Param("str") String str, Pageable pageable);
 
-	@Query("SELECT s FROM Sondaggio s WHERE s.codiceAccesso = :str")
-	SondaggioDTO findSondaggioDTOByCodiceAccesso(String str);
-	
-	
 	@Query("SELECT s FROM Sondaggio s WHERE s.codiceAccesso = :str")
 	Optional<Sondaggio> findSondaggioByCodiceAccesso(String str);
 	
