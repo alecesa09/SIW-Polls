@@ -126,7 +126,7 @@ public class SondaggioService {
 	    }
 
 	    // 2. Genero un nome completamente nuovo e univoco
-	    String nomeFileUnivoco = UUID.randomUUID().toString() + estensione;
+	    String nomeFileUnivoco = StringUtils.cleanPath(file.getOriginalFilename()); ;              //UUID.randomUUID().toString() + estensione;
 
 	    Path cartellaUpload = Paths.get(uploadDir);
 	    
