@@ -9,7 +9,14 @@ Ogni sondaggio ha un codice di accesso, necessario quando il creatore lo ha impo
 - **Voto pubblico**: l'entità Utente è collegata alla votazione espressa, e il voto può essere modificato o eliminato in seguito.
 - **Voto anonimo**: viene registrata solo la partecipazione dell'utente al sondaggio, senza collegare l'identità al voto specifico; di conseguenza, il voto anonimo non può più essere modificato né eliminato.
 
-quasi tutte le viste sono state fattte in react tranne i login la registrazione  e l'intefaccia admin;
+quasi tutte le viste sono state fatte in react tranne i login la registrazione  e l'intefaccia admin;
+
+L'intero sistema è live ed è stato sottoposto a deployment strutturando un'architettura distribuita. Il sito è accessibile e testabile al seguente indirizzo: https://siw-polls.web.app
+
+Nello specifico, i vari livelli dell'applicazione sono stati separati sfruttando piattaforme cloud differenti:
+Presentation Tier (Frontend): L'interfaccia in React è stata buildata e ospitata su Firebase Hosting.
+Logic Tier (Backend): L'applicazione Spring Boot è deployata come servizio web sulla piattaforma Railway.
+Data Tier (Database): I dati sono gestiti tramite un database PostgreSQL ospitato in cloud su Neon.
 
 ## Casi d'uso
 - Creazione sondaggio (utente)
