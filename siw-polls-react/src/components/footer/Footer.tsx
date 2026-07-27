@@ -8,10 +8,10 @@ export default function Footer(){
         <div className={styles.footerContainer}>
             {utente ? (
                     <a href={`${BACKEND_URL}/admin`}>
-                    <img src={logoAziendale} alt="Logo Aziendale" className={styles.adminImmage} />
+                    <img src={logoAziendale} alt="Logo Admin" className={styles.adminImmage} />
                     </a>
                 ):(
-                    <img src={logoAziendale} alt="Logo Aziendale" className={styles.adminImmage} />
+                    <img src={logoAziendale} alt="Logo Admin" className={styles.adminImmage} />
                 )
             } 
         </div>
