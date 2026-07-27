@@ -69,8 +69,7 @@ public class Sondaggio {
     private String codiceAccesso;
     
     @OneToMany(mappedBy = "sondaggio", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)
-   
-    @NotEmpty(message = "Deve esserci almeno una domanda")
+    @NotEmpty(message = "Deve esserci almeno una domanda nel sondaggio")
     private Set<@Valid Domanda> domande;
     
    

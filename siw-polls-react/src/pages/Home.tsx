@@ -106,8 +106,9 @@ export default function Home() {
                     <div className={styles.cardContent}>
                       <h2 className={styles.cardTitle}>{sondaggio.titolo}</h2>
                       <p className={styles.cardMeta}>
-                        <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT')}
+                        <strong>Scadenza:</strong> {new Date(sondaggio.dataScadenza).toLocaleDateString('it-IT', {year: 'numeric', month: 'long', day: 'numeric'})}
                       </p>
+                          
 
                       <Link to={`/sondaggio/${sondaggio.codiceAccesso}`} className={styles.btnPartecipa}>
                         Partecipa

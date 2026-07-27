@@ -90,7 +90,7 @@ function SondaggioForm() {
             navigate(`/sondaggio/${sondaggio.codiceAccesso}/commentoForm`);
         } catch (error) {
             console.error("Errore durante l'invio del voto:", error);
-            alert("Si è verificato un errore durante l'invio del voto. Riprova.");
+            alert("Errore durante l'invio del voto:" + error);
         } finally {
             setIsSubmitting(false);
         }

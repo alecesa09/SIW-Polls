@@ -50,9 +50,13 @@ export default function CreazioneSondaggio() {
       // questionario (e logiche come il voto anonimo) insieme all'immagine
       await creaSondaggio(sondaggio, file);
       navigate("/utenteHome");
-    } catch (err) {
-      console.error(err);
-      alert("Qualcosa è andato storto nell'invio del sondaggio");
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        // Se la risposta è un oggetto campo -> messaggio
+        alert([error.response.data]);
+      } else {
+        alert('Si è verificato un errore inaspettato.');
+      }
     }
   };
 

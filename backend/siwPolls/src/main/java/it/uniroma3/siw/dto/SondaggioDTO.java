@@ -46,22 +46,12 @@ public class SondaggioDTO {
 		this.immagine = immagine;
 	}
 
-	public LocalDate getScadenzaVoto() {
+	public LocalDate getDataScadenza() {
 		return dataScadenzaVoto;
 	}
 
-	public void setScadenzaVoto(LocalDate scadenzaVoto) {
+	public void setDataScadenza(LocalDate scadenzaVoto) {
 		this.dataScadenzaVoto = scadenzaVoto;
-	}
-
-
-	public LocalDate getDataScadenzaVoto() {
-		return dataScadenzaVoto;
-	}
-
-
-	public void setDataScadenzaVoto(LocalDate dataScadenzaVoto) {
-		this.dataScadenzaVoto = dataScadenzaVoto;
 	}
 
 
